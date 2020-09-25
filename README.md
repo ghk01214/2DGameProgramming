@@ -4,6 +4,7 @@
   - 제목: I Wanna Escape The Maze
   - 원작 게임: I Wanna be The Guy 시리즈
   - 원작 게임 스크린샷:
+  
     ![14680_00000bac](https://user-images.githubusercontent.com/32869007/94267583-d1d76700-ff76-11ea-86eb-9de2cf83d27f.png)
     ![vJULVO](https://user-images.githubusercontent.com/32869007/94267606-dbf96580-ff76-11ea-8490-48ce47555032.png)
   - 게임의 목적 및 방법: 즉사 장애물이 가득 설치된 미로를 점프를 이용하여 탈출
