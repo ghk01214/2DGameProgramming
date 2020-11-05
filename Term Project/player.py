@@ -65,7 +65,7 @@ class Player:
 		self.pos = x + dx, y + dy
 		self.frame = (self.frame + 1) % 4
 		gravity = 0.05
-		#self.delta = dx, dy - gravity
+		self.delta = dx, dy - gravity
 
 	def update_delta(self, ddx, ddy):
 		dx, dy = self.delta
