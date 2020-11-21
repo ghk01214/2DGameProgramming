@@ -46,10 +46,10 @@ class Player:
 		self.pos = x, y
 		self.time += gfw.delta_time
 		frame = self.time * 15
-		self.frame = int(frame) % 4
+		self.frame = int(frame) % self.imageData[0]
 
 	def draw(self):
-		width, height = 29, 25
+		width, height = self.imageData[1], 25
 		sx = self.frame * width
 		sy = self.action * height
 		pos = self.background.to_screen(self.pos)
