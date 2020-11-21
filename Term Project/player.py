@@ -72,10 +72,7 @@ class Player:
 				5 if dx > 0 else \
 				6 if pdx < 0 else 7
 
-			if pair[0] == SDL_KEYDOWN:
-				change_image = True
 			else:
-				change_image = False;
 		elif pair == Player.KEYDOWN_Z:
 			fire()
 
