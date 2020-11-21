@@ -25,7 +25,7 @@ class Player:
 		self.speed = 200
 		self.time = 0
 		self.frame = 0
-		self.action = 0
+		self.action = 7
 		self.mag = 1
 
 		global center
