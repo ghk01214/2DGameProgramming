@@ -18,7 +18,7 @@ class Player:
 	KEYDOWN_Z = (SDL_KEYDOWN, SDLK_z)
 
 	def __init__(self):
-		self.image = gfw.image.load(resBM('idle.png'))
+		self.image = gfw.image.load(resBM('animation.png'))
 		self.pos = get_canvas_width() // 2, get_canvas_height() // 2
 		self.delta = 0, 0
 		self.target = None
