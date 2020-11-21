@@ -18,7 +18,7 @@ def enter():
     gfw.world.add(gfw.layer.player, player)
     
     bg = VertScrollBackground('bg_city.png')
-    bg.speed = 100
+    bg.speed = 10
     gfw.world.add(gfw.layer.bg, bg)
     
     cloud = VertScrollBackground('clouds.png')
