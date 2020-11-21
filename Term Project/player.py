@@ -15,8 +15,8 @@ class Player:
 		(SDL_KEYUP, SDLK_UP): (0, -1),
 	}
 
-	KEYDOWN_Z = (SDL_KEYDOWN, SDLK_z)
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
+	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
 
 	def __init__(self):
 		self.image = gfw.image.load(resBM('animation.png'))
@@ -77,10 +77,9 @@ class Player:
 				self.imageData = 5, 29
 			else:
 				self.imageData = 4, 28
-
-		elif pair == Player.KEYDOWN_Z:
 		elif pair is Player.KEYDOWN_JUMP:
 			
+		elif pair is Player.KEYDOWN_SHOOT:
 			fire()
 
 	def player_delta(self):
