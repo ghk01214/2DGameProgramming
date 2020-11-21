@@ -1,4 +1,2 @@
-import game_framework
+import gfw
 import logo_state
-
-game_framework.run(logo_state)
