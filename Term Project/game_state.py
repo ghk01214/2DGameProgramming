@@ -7,7 +7,7 @@ from background import Background
 def enter():
 	gfw.world.init(['background', 'player', 'bullet'])
 	center = get_canvas_width() // 2, get_canvas_height() // 2
-	background = Background('stage_1.png')
+	background = Background('stage_5.png')
 
 	global player
 	player = Player()
