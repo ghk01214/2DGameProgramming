@@ -68,7 +68,9 @@ class Player:
 			self.delta = point_add(self.delta, Player.KEY_MAP[pair])
 			dx = self.delta[0]
 			self.action = \
-				1 if dx < 0 else 0
+				4 if dx < 0 else \
+				5 if dx > 0 else \
+				6 if pdx < 0 else 7
 
 			if pair[0] == SDL_KEYDOWN:
 				change_image = True
