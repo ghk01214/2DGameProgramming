@@ -27,6 +27,7 @@ class Player:
 		self.frame = 0
 		self.action = 7
 		self.mag = 1
+		self.imageData = 4, 28
 
 		global center
 		center = self.pos
