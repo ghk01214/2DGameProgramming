@@ -72,7 +72,11 @@ class Player:
 				5 if dx > 0 else \
 				6 if pdx < 0 else 7
 
+			if self.action == 4 or self.action == 5:
+				self.imageData = 5, 29
 			else:
+				self.imageData = 4, 28
+
 		elif pair == Player.KEYDOWN_Z:
 			fire()
 
