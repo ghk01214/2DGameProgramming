@@ -39,19 +39,14 @@ class Player:
 		x += dx * self.speed * self.mag * gfw.delta_time
 		y += dy * self.speed * self.mag * gfw.delta_time
 
-		px, py = x, y
 		bg_l, bg_b, bg_r, bg_t = self.background.get_boundary()
 		x = clamp(bg_l, x, bg_r)
 		y = clamp(bg_b, y, bg_t)
 
-		done = False
-		
 		self.pos = x, y
 		self.time += gfw.delta_time
 		frame = self.time * 15
 		self.frame = int(frame) % 4
-	#	gravity = 0.05
-	#	delta = dx, dy - gravity
 
 	def draw(self):
 		width, height = 29, 25
