@@ -5,14 +5,14 @@ from bullet import Bullet
 
 class Player:
 	KEY_MAP = {
-		(SDL_KEYDOWN, SDLK_LEFT): (-3, 0),
-		(SDL_KEYDOWN, SDLK_RIGHT): (3, 0),
-		(SDL_KEYDOWN, SDLK_DOWN): (0, -3),
-		(SDL_KEYDOWN, SDLK_UP): (0, 3),
-		(SDL_KEYUP, SDLK_LEFT): (3, 0),
-		(SDL_KEYUP, SDLK_RIGHT): (-3, 0),
-		(SDL_KEYUP, SDLK_DOWN): (0, 3),
-		(SDL_KEYUP, SDLK_UP): (0, -3),
+		(SDL_KEYDOWN, SDLK_LEFT): (-1, 0),
+		(SDL_KEYDOWN, SDLK_RIGHT): (1, 0),
+		(SDL_KEYDOWN, SDLK_DOWN): (0, -1),
+		(SDL_KEYDOWN, SDLK_UP): (0, 1),
+		(SDL_KEYUP, SDLK_LEFT): (1, 0),
+		(SDL_KEYUP, SDLK_RIGHT): (-1, 0),
+		(SDL_KEYUP, SDLK_DOWN): (0, 1),
+		(SDL_KEYUP, SDLK_UP): (0, -1),
 	}
 
 	KEYDOWN_Z = (SDL_KEYDOWN, SDLK_z)
