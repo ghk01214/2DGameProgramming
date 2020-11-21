@@ -1,43 +1,47 @@
 from pico2d import *
-import game_framework as gfw
+import gfw
 from game_object import *
 from player import Player
+from background import Background
 
 def enter():
+	gfw.world.init(['background', 'player', 'bullet'])
+	center = get_canvas_width() // 2, get_canvas_height() // 2
+	background = Background('stage_1.png')
+
 	global player
 	player = Player()
+	player.pos = background.center
+	player.background = background
+	background.target = player
+	gfw.world.add(gfw.layer.background, background)
+	gfw.world.add(gfw.layer.player, player)
+
+def exit():
+	pass
 
 def update():
-	player.update()
-
-	for b in Bullet.bullets:
-		b.update()
+	gfw.world.update()
 
 def draw():
-	player.draw()
-
-	for b in Bullet.bullets:
-		b.draw()
+	gfw.world.draw()
 
 def handle_event(e):
-	global player
-
 	if e.type == SDL_QUIT:
 		gfw.quit()
-	elif (e.type, e.key) == (SDL_KEYDOWN, SDLK_q):
-		gfw.quit()
-	elif (e.type, e.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-		gfw.pop()
+	elif e.type == SDL_KEYDOWN:
+		if e.key == SDLK_ESCAPE:
+			gfw.pop()
+		elif e.key == SDLK_q:
+			gfw.quit()
 
-	player.handle_event(e)
+	if player.handle_event(e):
+		return
 
 def pause():
 	pass
 
 def resume():
-	pass
-
-def exit():
 	pass
 
 if __name__ == '__main__':
