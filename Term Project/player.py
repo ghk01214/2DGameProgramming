@@ -77,11 +77,9 @@ class Player:
 				self.imageData = 5, 29
 			else:
 				self.imageData = 4, 28
-		elif pair is Player.KEYDOWN_JUMP:
-			
-		elif pair is Player.KEYDOWN_SHOOT:
 		elif pair == Player.KEYDOWN_JUMP:
 			self.jump()
+		elif pair == Player.KEYDOWN_SHOOT:
 			fire()
 
 	def player_delta(self):
