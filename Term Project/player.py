@@ -31,6 +31,7 @@ class Player:
 		self.frame = 0
 		self.action = 7
 		self.mag = 1
+		self.mag_speed = 0
 		self.state = Player.STANDING
 		self.imageData = 4, 28
 
@@ -104,6 +105,22 @@ class Player:
 			self.state = Player.DOUBLE_JUMP
 
 		self.jump_speed = Player.JUMP * self.mag
+	def update_mag(self):
+		if self.mag_speed == 0:
+			return
+
+		x, y = self.pos
+		_, b, _, _ = self.get_bb()
+		diff = y - b
+		prev_mag = self.mag
+
+		self.mag += self.mag_speed * gfw.delta_time
+		if self.mag > 2.0:
+			self.mag = 2.0
+			self.mag_speed = 0
+		elif self.mag < 1.0:
+			self.mag = 1.0
+			self.mag_speed = 0
 	def fire(self):
 		bullet = Bullet(pos)
 		Bullet.bullets.append(bullet)
