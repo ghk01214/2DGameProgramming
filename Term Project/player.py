@@ -25,7 +25,6 @@ class Player:
 		self.image = gfw.image.load(resBM('animation.png'))
 		self.pos = get_canvas_width() // 2, get_canvas_height() // 2
 		self.delta = 0, 0
-		self.target = None
 		self.speed = 200
 		self.time = 0
 		self.frame = 0
@@ -66,10 +65,6 @@ class Player:
 		pair = (e.type, e.key)
 
 		if pair in Player.KEY_MAP:
-			if self.target is not None:
-				self.target = None
-				self.delta = 0, 0
-
 			pdx = self.delta[0]
 			self.delta = point_add(self.delta, Player.KEY_MAP[pair])
 			dx = self.delta[0]
