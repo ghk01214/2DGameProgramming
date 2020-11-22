@@ -3,11 +3,21 @@ import gfw
 from game_object import *
 from player import Player
 from background import Background
+from platform import Platform
 
 def enter():
-	gfw.world.init(['background', 'player', 'bullet'])
+	gfw.world.init(['background', 'platform', 'player', 'bullet'])
 	center = get_canvas_width() // 2, get_canvas_height() // 2
 	background = Background('stage_5.png')
+
+	x = 0
+	canvas_w = get_canvas_width()
+
+	while x < canvas_w:
+		t = random.choice([Platform.T_10x2, Platform.T_2x2])
+		pf = Platform(t, x, 0)
+		gfw.world.add(gfw.layer.platform, pf)
+		x += pf.width
 
 	global player
 	player = Player()
