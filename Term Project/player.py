@@ -28,8 +28,11 @@ class Player:
 		self.action = 7
 		self.mag = 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 		self.mag_speed = 0
 		self.state = Player.STANDING
+=======
+>>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 =======
 >>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 		self.imageData = 4, 28
@@ -85,6 +88,9 @@ class Player:
 		elif pair is Player.KEYDOWN_JUMP:
 			
 		elif pair is Player.KEYDOWN_SHOOT:
+<<<<<<< HEAD
+>>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
+=======
 >>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 			fire()
 
@@ -94,6 +100,7 @@ class Player:
 		dx, dy = delta
 		return mag + dx, 2 + dy
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	def jump(self):
 		if self.state in [Player.FALLING, Player.DOUBLE_JUMP]:
@@ -121,6 +128,8 @@ class Player:
 		elif self.mag < 1.0:
 			self.mag = 1.0
 			self.mag_speed = 0
+=======
+>>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 =======
 >>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 	def fire(self):
