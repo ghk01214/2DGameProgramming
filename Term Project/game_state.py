@@ -1,7 +1,7 @@
 from pico2d import *
 import gfw
 from game_object import *
-#from player import Player
+from player import Player
 from background import Background
 from platform import Platform
 
@@ -10,22 +10,17 @@ def enter():
 	center = get_canvas_width() // 2, get_canvas_height() // 2
 	background = Background('stage_5.png')
 
-	#global player
-	#player = Player()
-	#player.pos = background.center
-	#player.background = background
-	#background.target = player
+	global player
+	player = Player()
+	player.pos = background.center
+	player.background = background
+	background.target = player
 	gfw.world.add(gfw.layer.background, background)
-	#gfw.world.add(gfw.layer.player, player)
+	
 	x = 0
 	canvas_w = get_canvas_width()
-
-	while x < canvas_w:
-		t = 0
-		pf = Platform(t, x, 0)
-		gfw.world.add(gfw.layer.platform, pf)
-		x += pf.width
-		gfw.world.add(gfw.layer.platform, pf)
+	
+	gfw.world.add(gfw.layer.player, player)
 
 def exit():
 	pass
@@ -45,8 +40,8 @@ def handle_event(e):
 		elif e.key == SDLK_q:
 			gfw.quit()
 
-	#if player.handle_event(e):
-	#	return
+	if player.handle_event(e):
+		return
 
 def pause():
 	pass
