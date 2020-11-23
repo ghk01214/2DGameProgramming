@@ -52,6 +52,8 @@ class Player:
 		self.time += gfw.delta_time
 		frame = self.time * 15
 		self.frame = int(frame) % self.imageData[0]
+		gravity = 0.05
+		self.delta = dx, dy - gravity
 
 	def draw(self):
 		width, height = self.imageData[1], 25
