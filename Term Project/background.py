@@ -20,12 +20,7 @@ class Background:
 
 	def get_boundary(self):
 		return self.boundary
-
-	def translate(self, point):
-		x, y = point
-		l, b, r, t = self.win_rect
-		return l + x, b + y
-
+		
 	def to_screen(self, point):
 		x, y = point
 		l, b, r, t = self.win_rect
