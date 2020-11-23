@@ -1,12 +1,11 @@
 from pico2d import *
-import game_framework as gfw
+import gfw
+from game_object import *
 import game_state
-
-RES_BACK = 'res/bitmap/background/'
 
 def enter():
 	global image
-	image = load_image(RES_BACK + 'Title.png')
+	image = gfw.image.load(resBM('title.png'))
 
 def update():
 	pass

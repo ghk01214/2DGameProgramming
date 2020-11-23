@@ -1,24 +1,23 @@
 from pico2d import *
-import game_framework as gfw
+import gfw
+from game_object import *
 import title_state
 import time
-
-RES_BACK = 'res/bitmap/background/'
 
 def enter():
 	global image
 	global logo_time
 
-	image = load_image(RES_BACK + 'Logo.png')
+	image = gfw.image.load(resBM('logo.png'))
 	logo_time = 0
 
 def update():
 	global logo_time
 
-	logo_time += game_framework.delta_time
+	logo_time += gfw.delta_time
 
 	if logo_time > 1.0:
-		game_framework.change(title_state)
+		gfw.change(title_state)
 
 def draw():
 	image.draw(400, 300)
@@ -42,4 +41,4 @@ def exit():
 	del image
 
 if __name__ == '__main__':
-	game_framework.run_main()
+	gfw.run_main()
