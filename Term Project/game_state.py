@@ -3,20 +3,18 @@ import gfw
 from game_object import *
 from player import Player
 from background import Background
-from platform import Platform
+#from platform import Platform
 
 def enter():
 	gfw.world.init(['background', 'platform', 'player', 'bullet'])
 	center = get_canvas_width() // 2, get_canvas_height() // 2
-	background = Background('stage_1.png')
+	background = Background('stage_5.png')
+	gfw.world.add(gfw.layer.background, background)
 
 	global player
 	player = Player()
 	player.pos = background.center
-	player.background = background
-	background.target = player
-	gfw.world.add(gfw.layer.background, background)
-	
+	player.background = background	
 	gfw.world.add(gfw.layer.player, player)
 
 def exit():
