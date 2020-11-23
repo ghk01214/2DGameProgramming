@@ -32,6 +32,8 @@ class Player:
 		self.mag = 1
 		self.mag_speed = 0
 		self.imageData = 4, 28
+		self.width, self.height = 28, 25
+		self.imageType = 4
 
 		global center
 		center = self.pos
@@ -52,16 +54,34 @@ class Player:
 		self.time += gfw.delta_time
 		frame = self.time * 15
 		self.frame = int(frame) % self.imageData[0]
+		self.frame = int(frame) % self.imageType
 		gravity = 0.05
 		self.delta = dx, dy - gravity
 
 	def draw(self):
 		width, height = self.imageData[1], 25
+		x, y = self.pos
+		width, height = self.width, self.height
 		sx = self.frame * width
 		sy = self.action * height
 		pos = self.background.to_screen(self.pos)
 			
 		self.image.clip_draw(sx, sy, 28, 25, *pos)
+
+		if x < self.width // 2:
+			x = width // 2
+
+		if y < self.height // 2:
+			y = height // 2
+
+		if x > get_canvas_width() - width // 2:
+			x = get_canvas_width() - width // 2
+
+		if y > get_canvas_height() - height // 2:
+			y = get_canvas_height() - height // 2
+
+		self.pos = x, y			
+		self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
 
 	def get_platform(self, foot):
 		selected = None
@@ -103,8 +123,13 @@ class Player:
 
 			if self.action == 4 or self.action == 5:
 				self.imageData = 5, 29
+				self.imageType = 5
+				self.width = 29
 			else:
 				self.imageData = 4, 28
+				self.imageType = 4
+				self.width = 28
+
 		elif pair == Player.KEYDOWN_JUMP:
 			self.jump()
 		elif pair == Player.KEYDOWN_SHOOT:
