@@ -25,10 +25,11 @@ def draw():
 def handle_event(e):
 	if e.type == SDL_QUIT:
 		gfw.quit()
-	elif (e.type, e.key) == (SDL_KEYDOWN, SDLK_q):
-		gfw.quit()
-	elif (e.type, e.key) == (SDL_KEYDOWN, SDLK_SPACE):
-		gfw.push(game_state)
+	elif e.type == SDL_KEYDOWN:
+		if e.key == SDLK_ESCAPE:
+			gfw.pop()
+		elif e.key == SDLK_q:
+			gfw.quit()
 
 def pause():
 	pass
