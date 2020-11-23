@@ -31,7 +31,6 @@ class Player:
 		self.action = 7
 		self.mag = 1
 		self.mag_speed = 0
-		self.imageData = 4, 28
 		self.width, self.height = 28, 25
 		self.imageType = 4
 
@@ -39,7 +38,6 @@ class Player:
 		center = self.pos
 
 	def update(self):
-
 		x, y = self.pos
 		dx, dy = self.delta
 
@@ -53,20 +51,15 @@ class Player:
 		self.pos = x, y
 		self.time += gfw.delta_time
 		frame = self.time * 15
-		self.frame = int(frame) % self.imageData[0]
 		self.frame = int(frame) % self.imageType
 		gravity = 0.05
 		self.delta = dx, dy - gravity
 
 	def draw(self):
-		width, height = self.imageData[1], 25
 		x, y = self.pos
 		width, height = self.width, self.height
 		sx = self.frame * width
 		sy = self.action * height
-		pos = self.background.to_screen(self.pos)
-			
-		self.image.clip_draw(sx, sy, 28, 25, *pos)
 
 		if x < self.width // 2:
 			x = width // 2
@@ -122,11 +115,9 @@ class Player:
 				6 if pdx < 0 else 7
 
 			if self.action == 4 or self.action == 5:
-				self.imageData = 5, 29
 				self.imageType = 5
 				self.width = 29
 			else:
-				self.imageData = 4, 28
 				self.imageType = 4
 				self.width = 28
 
@@ -142,35 +133,6 @@ class Player:
 		return mag + dx, 2 + dy
 
 	def jump(self):
-		if self.state in [Player.FALLING, Player.DOUBLE_JUMP]:
-			return
-
-		if self.state in [Player.RUNNING, Player.STANDING]:
-			self.state = Player.JUMPING
-		elif self.state == Player.JUMPING:
-			self.state = Player.DOUBLE_JUMP
-
-		self.jump_speed = Player.JUMP * self.mag
-
-	def update_mag(self):
-		if self.mag_speed == 0:
-			return
-
-		x, y = self.pos
-		_, b, _, _ = self.get_bb()
-		diff = y - b
-		prev_mag = self.mag
-
-		self.mag += self.mag_speed * gfw.delta_time
-		if self.mag > 2.0:
-			self.mag = 2.0
-			self.mag_speed = 0
-		elif self.mag < 1.0:
-			self.mag = 1.0
-			self.mag_speed = 0
-
-		new_y = b + diff * self.mag / prev_mag
-		self.pos = x, new_y
 		pass
 
 	def fire(self):
