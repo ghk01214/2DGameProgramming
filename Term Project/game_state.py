@@ -8,7 +8,7 @@ from platform import Platform
 def enter():
 	gfw.world.init(['background', 'platform', 'player', 'bullet'])
 	center = get_canvas_width() // 2, get_canvas_height() // 2
-	background = Background('stage_5.png')
+	background = Background('stage_1.png')
 
 	global player
 	player = Player()
@@ -16,9 +16,6 @@ def enter():
 	player.background = background
 	background.target = player
 	gfw.world.add(gfw.layer.background, background)
-	
-	x = 0
-	canvas_w = get_canvas_width()
 	
 	gfw.world.add(gfw.layer.player, player)
 
