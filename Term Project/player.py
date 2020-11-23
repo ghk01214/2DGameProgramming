@@ -171,6 +171,7 @@ class Player:
 
 		new_y = b + diff * self.mag / prev_mag
 		self.pos = x, new_y
+		pass
 
 	def fire(self):
 		bullet = Bullet(pos)
