@@ -4,7 +4,6 @@ import gfw
 from bullet import Bullet
 
 class Player:
-	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING = range(5)
 	KEY_MAP = {
 		(SDL_KEYDOWN, SDLK_LEFT): (-1, 0),
 		(SDL_KEYDOWN, SDLK_RIGHT): (1, 0),
@@ -19,8 +18,6 @@ class Player:
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
 	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
 
-	GRAVITY = 3000
-	JUMP = 1000
 	def __init__(self):
 		self.image = gfw.image.load(resBM('animation.png'))
 		self.pos = get_canvas_width() // 2, get_canvas_height() // 2
@@ -30,8 +27,11 @@ class Player:
 		self.frame = 0
 		self.action = 7
 		self.mag = 1
+<<<<<<< HEAD
 		self.mag_speed = 0
 		self.state = Player.STANDING
+=======
+>>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 		self.imageData = 4, 28
 
 		global center
@@ -77,9 +77,15 @@ class Player:
 				self.imageData = 5, 29
 			else:
 				self.imageData = 4, 28
+<<<<<<< HEAD
 		elif pair == Player.KEYDOWN_JUMP:
 			self.jump()
 		elif pair == Player.KEYDOWN_SHOOT:
+=======
+		elif pair is Player.KEYDOWN_JUMP:
+			
+		elif pair is Player.KEYDOWN_SHOOT:
+>>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 			fire()
 
 	def player_delta(self):
@@ -88,6 +94,7 @@ class Player:
 		dx, dy = delta
 		return mag + dx, 2 + dy
 
+<<<<<<< HEAD
 	def jump(self):
 		if self.state in [Player.FALLING, Player.DOUBLE_JUMP]:
 			return
@@ -114,6 +121,8 @@ class Player:
 		elif self.mag < 1.0:
 			self.mag = 1.0
 			self.mag_speed = 0
+=======
+>>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 	def fire(self):
 		bullet = Bullet(pos)
 		Bullet.bullets.append(bullet)
