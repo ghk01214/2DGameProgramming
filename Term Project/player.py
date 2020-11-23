@@ -5,14 +5,14 @@ from bullet import Bullet
 
 class Player:
 	KEY_MAP = {
-		(SDL_KEYDOWN, SDLK_LEFT): (-1, 0),
-		(SDL_KEYDOWN, SDLK_RIGHT): (1, 0),
-		(SDL_KEYDOWN, SDLK_DOWN): (0, -1),
-		(SDL_KEYDOWN, SDLK_UP): (0, 1),
-		(SDL_KEYUP, SDLK_LEFT): (1, 0),
-		(SDL_KEYUP, SDLK_RIGHT): (-1, 0),
-		(SDL_KEYUP, SDLK_DOWN): (0, 1),
-		(SDL_KEYUP, SDLK_UP): (0, -1),
+		(SDL_KEYDOWN, SDLK_LEFT): 	(-1,  0),
+		(SDL_KEYDOWN, SDLK_RIGHT): 	( 1,  0),
+		(SDL_KEYDOWN, SDLK_DOWN): 	( 0, -1),
+		(SDL_KEYDOWN, SDLK_UP): 	( 0,  1),
+		(SDL_KEYUP, SDLK_LEFT): 	( 1,  0),
+		(SDL_KEYUP, SDLK_RIGHT):	(-1,  0),
+		(SDL_KEYUP, SDLK_DOWN): 	( 0,  1),
+		(SDL_KEYUP, SDLK_UP): 		( 0, -1),
 	}
 
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
@@ -27,14 +27,7 @@ class Player:
 		self.frame = 0
 		self.action = 7
 		self.mag = 1
-<<<<<<< HEAD
-<<<<<<< HEAD
 		self.mag_speed = 0
-		self.state = Player.STANDING
-=======
->>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
-=======
->>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 		self.imageData = 4, 28
 
 		global center
@@ -80,18 +73,9 @@ class Player:
 				self.imageData = 5, 29
 			else:
 				self.imageData = 4, 28
-<<<<<<< HEAD
 		elif pair == Player.KEYDOWN_JUMP:
 			self.jump()
 		elif pair == Player.KEYDOWN_SHOOT:
-=======
-		elif pair is Player.KEYDOWN_JUMP:
-			
-		elif pair is Player.KEYDOWN_SHOOT:
-<<<<<<< HEAD
->>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
-=======
->>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
 			fire()
 
 	def player_delta(self):
@@ -100,8 +84,6 @@ class Player:
 		dx, dy = delta
 		return mag + dx, 2 + dy
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	def jump(self):
 		if self.state in [Player.FALLING, Player.DOUBLE_JUMP]:
 			return
@@ -128,10 +110,7 @@ class Player:
 		elif self.mag < 1.0:
 			self.mag = 1.0
 			self.mag_speed = 0
-=======
->>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
-=======
->>>>>>> parent of 2a46d45... 플레이어 스테이트 구분
+
 	def fire(self):
 		bullet = Bullet(pos)
 		Bullet.bullets.append(bullet)
