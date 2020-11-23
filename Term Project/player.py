@@ -4,15 +4,16 @@ import gfw
 from bullet import Bullet
 
 class Player:
+	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING = range(5)
 	KEY_MAP = {
-		(SDL_KEYDOWN, SDLK_LEFT): (-1, 0),
-		(SDL_KEYDOWN, SDLK_RIGHT): (1, 0),
-		(SDL_KEYDOWN, SDLK_DOWN): (0, -1),
-		(SDL_KEYDOWN, SDLK_UP): (0, 1),
-		(SDL_KEYUP, SDLK_LEFT): (1, 0),
-		(SDL_KEYUP, SDLK_RIGHT): (-1, 0),
-		(SDL_KEYUP, SDLK_DOWN): (0, 1),
-		(SDL_KEYUP, SDLK_UP): (0, -1),
+		(SDL_KEYDOWN, SDLK_LEFT):	(-1,  0),
+		(SDL_KEYDOWN, SDLK_RIGHT): 	( 1,  0),
+		(SDL_KEYDOWN, SDLK_DOWN): 	( 0, -1),
+		(SDL_KEYDOWN, SDLK_UP): 	( 0,  1),
+		(SDL_KEYUP, SDLK_LEFT): 	( 1,  0),
+		(SDL_KEYUP, SDLK_RIGHT): 	(-1,  0),
+		(SDL_KEYUP, SDLK_DOWN): 	( 0,  1),
+		(SDL_KEYUP, SDLK_UP): 		( 0, -1),
 	}
 
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
@@ -31,6 +32,7 @@ class Player:
 		self.action = 7
 		self.mag = 1
 		self.mag_speed = 0
+		self.state = Player.STANDING
 		self.width, self.height = 28, 25
 		self.imageType = 4
 
@@ -50,7 +52,7 @@ class Player:
 
 		self.pos = x, y
 		self.time += gfw.delta_time
-		frame = self.time * 15
+		frame = self.time * 17
 		self.frame = int(frame) % self.imageType
 		gravity = 0.05
 		self.delta = dx, dy - gravity
@@ -117,20 +119,16 @@ class Player:
 			if self.action == 4 or self.action == 5:
 				self.imageType = 5
 				self.width = 29
+				self.state = Player.RUNNING
 			else:
 				self.imageType = 4
 				self.width = 28
+				self.state = Player.STANDING
 
 		elif pair == Player.KEYDOWN_JUMP:
 			self.jump()
 		elif pair == Player.KEYDOWN_SHOOT:
 			fire()
-
-	def player_delta(self):
-		dxs = [-3, 3, -1, 1]
-		mag = dxs[action]
-		dx, dy = delta
-		return mag + dx, 2 + dy
 
 	def jump(self):
 		pass
