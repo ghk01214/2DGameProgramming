@@ -5,18 +5,21 @@ from bullet import Bullet
 
 class Player:
 	KEY_MAP = {
-		(SDL_KEYDOWN, SDLK_LEFT): 	(-1,  0),
-		(SDL_KEYDOWN, SDLK_RIGHT): 	( 1,  0),
-		(SDL_KEYDOWN, SDLK_DOWN): 	( 0, -1),
-		(SDL_KEYDOWN, SDLK_UP): 	( 0,  1),
-		(SDL_KEYUP, SDLK_LEFT): 	( 1,  0),
-		(SDL_KEYUP, SDLK_RIGHT):	(-1,  0),
-		(SDL_KEYUP, SDLK_DOWN): 	( 0,  1),
-		(SDL_KEYUP, SDLK_UP): 		( 0, -1),
+		(SDL_KEYDOWN, SDLK_LEFT): (-1, 0),
+		(SDL_KEYDOWN, SDLK_RIGHT): (1, 0),
+		(SDL_KEYDOWN, SDLK_DOWN): (0, -1),
+		(SDL_KEYDOWN, SDLK_UP): (0, 1),
+		(SDL_KEYUP, SDLK_LEFT): (1, 0),
+		(SDL_KEYUP, SDLK_RIGHT): (-1, 0),
+		(SDL_KEYUP, SDLK_DOWN): (0, 1),
+		(SDL_KEYUP, SDLK_UP): (0, -1),
 	}
 
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
 	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
+
+	GRAVITY = 3000
+	JUMP = 1000
 
 	def __init__(self):
 		self.image = gfw.image.load(resBM('animation.png'))
@@ -34,6 +37,7 @@ class Player:
 		center = self.pos
 
 	def update(self):
+
 		x, y = self.pos
 		dx, dy = self.delta
 
@@ -56,6 +60,32 @@ class Player:
 		pos = self.background.to_screen(self.pos)
 			
 		self.image.clip_draw(sx, sy, 28, 25, *pos)
+
+	def get_platform(self, foot):
+		selected = None
+		sel_top = 0
+		x, y = self.pos
+
+		for platform in gfw.world.objects_at(gfw.layer.platform):
+			left, bottom, right, top = platform.get_bb()
+
+			if x < left or x > right:
+				continue
+
+			mid = (bottom + top) // 2
+
+			if foot < mid:
+				continue
+
+			if selected is None:
+				selected = platform
+				sel_top = top
+			else:
+				if top > sel_top:
+					selected = platform
+					sel_top = top
+
+		return selected
 
 	def handle_event(self, e):
 		pair = (e.type, e.key)
@@ -94,6 +124,7 @@ class Player:
 			self.state = Player.DOUBLE_JUMP
 
 		self.jump_speed = Player.JUMP * self.mag
+
 	def update_mag(self):
 		if self.mag_speed == 0:
 			return
@@ -110,6 +141,9 @@ class Player:
 		elif self.mag < 1.0:
 			self.mag = 1.0
 			self.mag_speed = 0
+
+		new_y = b + diff * self.mag / prev_mag
+		self.pos = x, new_y
 
 	def fire(self):
 		bullet = Bullet(pos)
