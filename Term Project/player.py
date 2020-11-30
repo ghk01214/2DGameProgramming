@@ -152,7 +152,16 @@ class Player:
 			fire()
 
 	def jump(self):
-		pass
+		if self.state in [Player.DOUBLE_JUMP, Player.DOUBLE_FALL]:
+			return
+		elif self.state in [Player.STANDING, Player.RUNNING]:
+			self.state = Player.JUMPING
+		elif self.state == Player.JUMPING:
+			self.state = Player.DOUBLE_JUMP
+		elif self.state == Player.FALLING:
+			self.state = Player.DOUBLE_FALL
+
+		self.jump_speed = Player.JUMP * self.mag
 
 	def fire(self):
 		bullet = Bullet(pos)
