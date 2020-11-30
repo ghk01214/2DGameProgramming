@@ -5,7 +5,7 @@ import game_object
 from bullet import Bullet
 
 class Player:
-	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING = range(5)
+	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING, DOUBLE_FALL = range(6)
 	KEY_MAP = {
 		(SDL_KEYDOWN, SDLK_LEFT):	(-1,  0),
 		(SDL_KEYDOWN, SDLK_RIGHT): 	( 1,  0),
