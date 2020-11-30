@@ -25,6 +25,7 @@ def update():
 
 def draw():
 	gfw.world.draw()
+	draw_collision_box()
 
 def handle_event(e):
 	if e.type == SDL_QUIT:
