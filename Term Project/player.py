@@ -30,7 +30,7 @@ class Player:
 	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
 
 	GRAVITY = 3000
-	JUMP = 1000
+	JUMP = 500
 
 	def __init__(self):
 		self.image = gfw.image.load(resBM('animation.png'))
