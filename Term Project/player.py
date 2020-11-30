@@ -1,6 +1,7 @@
 from pico2d import *
 from game_object import *
 import gfw
+import game_object
 from bullet import Bullet
 
 class Player:
@@ -15,6 +16,15 @@ class Player:
 		(SDL_KEYUP, SDLK_DOWN): 	( 0,  1),
 		(SDL_KEYUP, SDLK_UP): 		( 0, -1),
 	}
+
+	BB_DIFFS = [
+		(-14, -11, 12, 10),	#STANDING
+		(-14, -11, 12, 10),	#RUNNING
+		(-11, -10, 11, 10),	#JUMPING
+		(-11, -10, 11, 10),	#DOUBLE_JUMP
+		(-14, -10, 12, 10),	#FALLING
+		(-14, -10, 12, 10),	#DOUBLE_FALL
+	]
 
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
 	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
@@ -103,6 +113,17 @@ class Player:
 					sel_top = top
 
 		return selected
+
+	def get_bb(self):
+		left, bottom, right, top = Player.BB_DIFFS[self.state]
+		x, y = self.pos
+		if self.mag != 1:
+			left *= self.mag
+			bottom *= self.mag
+			right *= self.mag
+			top *= self.mag
+
+		return x + left, y + bottom, x + right, y + top
 
 	def handle_event(self, e):
 		pair = (e.type, e.key)
