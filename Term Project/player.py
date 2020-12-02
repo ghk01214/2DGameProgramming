@@ -45,6 +45,7 @@ class Player:
 		self.state = Player.STANDING
 		self.width, self.height = 28, 25
 		self.imageType = 4
+		self.left, self.right, self.top = 0, 0, 0
 
 		global center
 		center = self.pos
@@ -56,6 +57,7 @@ class Player:
 			x, y = self.move((0, self.jump_speed * gfw.delta_time))
 			self.jump_speed -= Player.GRAVITY * self.mag * gfw.delta_time
 
+		self.left, feet, self.right, self.top = self.get_bb()
 		x += dx * self.speed * self.mag * gfw.delta_time
 		y += dy * self.speed * self.mag * gfw.delta_time
 
