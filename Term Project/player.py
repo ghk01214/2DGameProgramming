@@ -118,6 +118,8 @@ class Player:
 				sel_top = top
 			else:
 				if top > sel_top:
+					print(sel_top)
+					print(left, bottom, right, top)
 					selected = platform
 					sel_top = top
 
