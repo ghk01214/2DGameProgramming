@@ -65,10 +65,6 @@ class Player:
 		x += dx * self.speed * self.mag * gfw.delta_time
 		y += dy * self.speed * self.mag * gfw.delta_time
 
-		bg_l, bg_b, bg_r, bg_t = self.background.get_boundary()
-		x = clamp(bg_l, x, bg_r)
-		y = clamp(bg_b, y, bg_t)
-
 		self.pos = x, y
 		self.time += gfw.delta_time
 		frame = self.time * 17
@@ -76,21 +72,6 @@ class Player:
 
 	def draw(self):
 		x, y = self.pos
-		width, height = self.width, self.height
-		sx = self.frame * width
-		sy = self.action * height
-
-		if x < self.width // 2:
-			x = width // 2
-
-		if y < self.height // 2:
-			y = height // 2
-
-		if x > get_canvas_width() - width // 2:
-			x = get_canvas_width() - width // 2
-
-		if y > get_canvas_height() - height // 2:
-			y = get_canvas_height() - height // 2
 
 		self.pos = x, y			
 		self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
