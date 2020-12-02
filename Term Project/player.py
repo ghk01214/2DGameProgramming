@@ -97,6 +97,10 @@ class Player:
 		self.pos = x, y			
 		self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
 
+	def move(self, diff):
+		x, y = game_object.point_add(self.pos, diff)
+		return x, y
+
 	def get_platform(self, feet):
 		selected = None
 		sel_top = 0
