@@ -18,12 +18,12 @@ class Player:
 	}
 
 	BB_DIFFS = [
-		(-14, -11, 12, 10),	#STANDING
-		(-14, -11, 12, 10),	#RUNNING
-		(-11, -10, 11, 10),	#JUMPING
-		(-11, -10, 11, 10),	#DOUBLE_JUMP
-		(-14, -10, 12, 10),	#FALLING
-		(-14, -10, 12, 10),	#DOUBLE_FALL
+		(-14, -12, 12, 10),	#STANDING
+		(-14, -12, 12, 10),	#RUNNING
+		(-11, -12, 11, 10),	#JUMPING
+		(-11, -12, 11, 10),	#DOUBLE_JUMP
+		(-14, -12, 12, 10),	#FALLING
+		(-14, -12, 12, 10),	#DOUBLE_FALL
 	]
 
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
