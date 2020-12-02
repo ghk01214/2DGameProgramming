@@ -73,8 +73,6 @@ class Player:
 		self.time += gfw.delta_time
 		frame = self.time * 17
 		self.frame = int(frame) % self.imageType
-		#gravity = 0.05
-		#self.delta = dx, dy - gravity
 
 	def draw(self):
 		x, y = self.pos
