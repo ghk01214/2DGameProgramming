@@ -88,6 +88,8 @@ class Player:
 
 	def draw(self):
 		x, y = self.pos
+		sx = self.frame * self.width
+		sy = self.action * self.height + 1
 
 		self.pos = x, y			
 		self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
