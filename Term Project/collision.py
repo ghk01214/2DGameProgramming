@@ -15,14 +15,13 @@ def collides_distance(a, b):
 def check_collision():
 	dead, full = False, False
 
-	for m in gfw.world.objects_at(gfw.layer.missile):
+	for m in gfw.world.objects_at(gfw.layer.platform):
 		if collides_distance(player, m):
-			gfw.world.remove(m)
-			dead = player.decrease_life()
+			return True
 
-	for i in gfw.world.objects_at(gfw.layer.item):
-		if collides_distance(player, i):
-			gfw.world.remove(i)
-			full = player.increase_life()
+	#for i in gfw.world.objects_at(gfw.layer.item):
+	#	if collides_distance(player, i):
+	#		gfw.world.remove(i)
+	#		full = player.increase_life()
 
-	return dead, full
+	#return dead, full

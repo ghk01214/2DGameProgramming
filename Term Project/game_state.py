@@ -5,6 +5,7 @@ from player import Player
 #from background import Background
 from platform import Platform
 from tile import Background
+from collision import check_collision
 import stage_gen
 
 def enter():
@@ -22,6 +23,23 @@ def enter():
 	stage_gen.load(resBM('../stage_1.txt'))
 def exit():
 	pass
+
+def collides_block(a, b):
+	(la, ba, ra, ta) = a.get_bb()
+	(lb, bb, rb, tb) = b.get_bb()
+
+	if la > rb: return False
+	if ra < lb: return False
+	#if ba > tb: return False
+	if ta < bb: return False
+
+	return True
+
+def check_block():
+	for block in gfw.world.objects_at(gfw.layer.platform):
+		if collides_block(player, block):
+			#player.move_for = False
+			print('hit', block)
 
 def update():
 	gfw.world.update()
