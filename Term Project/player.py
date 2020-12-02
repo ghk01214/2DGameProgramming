@@ -29,7 +29,7 @@ class Player:
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
 	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
 
-	GRAVITY = 3000
+	GRAVITY = 2000
 	JUMP = 500
 
 	def __init__(self):
