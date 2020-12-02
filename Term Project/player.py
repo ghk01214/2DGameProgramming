@@ -34,7 +34,7 @@ class Player:
 
 	def __init__(self):
 		self.image = gfw.image.load(resBM('animation.png'))
-		self.pos = get_canvas_width() // 2, get_canvas_height() // 2
+		self.pos = 600, 530
 		self.delta = 0, 0
 		self.speed = 200
 		self.time = 0
