@@ -53,6 +53,8 @@ class Player:
 	def update(self):
 		x, y = self.pos
 		dx, dy = self.delta
+		self.time += gfw.delta_time
+
 		if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING, Player.DOUBLE_FALL]:
 			x, y = self.move((0, self.jump_speed * gfw.delta_time))
 			self.jump_speed -= Player.GRAVITY * self.mag * gfw.delta_time
@@ -66,7 +68,6 @@ class Player:
 		y += dy * self.speed * self.mag * gfw.delta_time
 
 		self.pos = x, y
-		self.time += gfw.delta_time
 		frame = self.time * 17
 		self.frame = int(frame) % self.imageType
 
