@@ -1,7 +1,7 @@
 from pico2d import *
 import gfw
 import game_object
-import random
+
 UNIT = 32
 INFO = [
 	( UNIT, UNIT, 'stage_1_block.png'),
