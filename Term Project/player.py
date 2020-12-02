@@ -97,7 +97,7 @@ class Player:
 		self.pos = x, y			
 		self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
 
-	def get_platform(self, foot):
+	def get_platform(self, feet):
 		selected = None
 		sel_top = 0
 		x, y = self.pos
@@ -110,7 +110,7 @@ class Player:
 
 			mid = (bottom + top) // 2
 
-			if foot < mid:
+			if feet < mid:
 				continue
 
 			if selected is None:
