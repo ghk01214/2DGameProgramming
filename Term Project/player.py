@@ -58,6 +58,10 @@ class Player:
 			self.jump_speed -= Player.GRAVITY * self.mag * gfw.delta_time
 
 		self.left, feet, self.right, self.top = self.get_bb()
+					x, y = self.move((0, top - feet))
+					self.state = Player.STANDING
+					self.jump_speed = 0
+
 		x += dx * self.speed * self.mag * gfw.delta_time
 		y += dy * self.speed * self.mag * gfw.delta_time
 
@@ -145,11 +149,11 @@ class Player:
 			if self.action == 4 or self.action == 5:
 				self.imageType = 5
 				self.width = 29
-				self.state = Player.RUNNING
+				#self.state = Player.RUNNING
 			else:
 				self.imageType = 4
 				self.width = 28
-				self.state = Player.STANDING
+				#self.state = Player.STANDING
 
 		elif pair == Player.KEYDOWN_JUMP:
 			self.jump()
