@@ -60,6 +60,21 @@ class Player:
 			self.jump_speed -= Player.GRAVITY * self.mag * gfw.delta_time
 
 		self.left, feet, self.right, self.top = self.get_bb()
+
+		if feet < 0:
+			x, y = self.move((0, get_canvas_height()))
+
+		platform = self.get_platform(feet)
+
+		if platform is not None:
+			left, bottom, right, top = platform.get_bb()
+
+			if self.state in [Player.STANDING, Player.RUNNING]:
+				if feet > top:
+					self.state = Player.FALLING
+					self.jump_speed = 0
+			else:
+				if self.jump_speed < 0 and int(feet) <= top:
 					x, y = self.move((0, top - feet))
 					self.state = Player.STANDING
 					self.jump_speed = 0
