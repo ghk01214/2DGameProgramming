@@ -78,6 +78,7 @@ class Player:
 			x, y = self.move((0, get_canvas_height()))
 
 		platform = self.get_platform(feet)
+		wall = self.get_wall(left, right)
 
 		if platform is not None:
 			p_left, p_bottom, p_right, p_top = platform.get_bb()
@@ -145,6 +146,27 @@ class Player:
 					sel_top = top
 
 		return selected
+
+	def get_wall(self, selfLeft, selfRight):
+		selected = None
+		_, y = self.pos
+
+		for platform in gfw.world.objects_at(gfw.layer.platform):
+			left, bottom, right, top = platform.get_bb()
+
+			if y > top or y < bottom:
+				continue
+
+			if selfRight < left or selfLeft > right:
+				continue
+
+			selected = platform
+
+		return selected
+
+	def wall_check(self, wall, selfLeft, selfRight):
+		x, y = self.pos
+
 
 	def get_bb(self):
 		left, bottom, right, top = Player.BB_DIFFS[self.state]
