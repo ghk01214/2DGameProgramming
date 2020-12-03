@@ -86,7 +86,6 @@ class Player:
 			if self.state in [Player.STANDING, Player.RUNNING]:
 				if feet > p_top:
 					self.state = Player.FALLING
-					self.jump_speed = 0
 			else:
 				if self.jump_speed < 0:
 					if self.state == Player.JUMPING:
@@ -127,11 +126,10 @@ class Player:
 			self.mag = 1
 			x += dx * self.speed * self.mag * gfw.delta_time
 
-		x += dx * self.speed * self.mag * gfw.delta_time
-		y += dy * self.speed * self.mag * gfw.delta_time
 		if self.mag == 0:
 			print(int(left), int(right))
 		
+		#y += dy * self.speed * self.mag * gfw.delta_time
 
 		self.pos = x, y
 		frame = self.time * 17
