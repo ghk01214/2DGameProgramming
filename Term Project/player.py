@@ -164,7 +164,9 @@ class Player:
 			fire()
 
 	def jump(self):
-		if self.state in [Player.DOUBLE_JUMP, Player.DOUBLE_FALL]:
+		if self.state == Player.DOUBLE_JUMP:
+			if self.jump_speed < 0:
+				self.state = Player.DOUBLE_FALL
 			return
 		elif self.state in [Player.STANDING, Player.RUNNING]:
 			self.state = Player.JUMPING
