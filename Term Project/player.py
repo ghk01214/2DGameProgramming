@@ -213,9 +213,9 @@ class Player:
 		pair = (e.type, e.key)
 
 		if pair in Player.KEY_MAP:
-			pdx = self.delta[0]
+			pdx, _ = self.delta
 			self.delta = point_add(self.delta, Player.KEY_MAP[pair])
-			dx = self.delta[0]
+			dx, _ = self.delta
 			self.action = \
 				4 if dx < 0 else \
 				5 if dx > 0 else \
