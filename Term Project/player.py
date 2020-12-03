@@ -86,9 +86,16 @@ class Player:
 					self.state = Player.FALLING
 					self.jump_speed = 0
 			else:
-				if self.jump_speed < 0 and int(feet) <= top:
-					x, y = self.move((0, top - feet))
-					self.state = Player.STANDING
+				if self.jump_speed < 0:
+					if self.state == Player.JUMPING:
+						self.state = Player.FALLING
+					elif self.state == Player.DOUBLE_JUMP:
+						self.state = Player.DOUBLE_FALL
+
+					if int(feet) <= p_top:
+						_, y = self.move((0, p_top - feet))
+						self.state = Player.STANDING
+						self.jump_speed = 0
 					self.jump_speed = 0
 
 		x += dx * self.speed * self.mag * gfw.delta_time
