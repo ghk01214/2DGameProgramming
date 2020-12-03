@@ -45,7 +45,7 @@ class Player:
 		self.state = Player.STANDING
 		self.width, self.height = 28, 25
 		self.imageType = 4
-		self.left, self.right, self.top = 0, 0, 0
+		self.jump_speed = 0
 
 		global center
 		center = self.pos
@@ -59,7 +59,6 @@ class Player:
 			x, y = self.move((0, self.jump_speed * gfw.delta_time))
 			self.jump_speed -= Player.GRAVITY * self.mag * gfw.delta_time
 
-		self.left, feet, self.right, self.top = self.get_bb()
 		if self.state == 0:
 			print('stand')
 		elif self.state == 1:
@@ -73,16 +72,18 @@ class Player:
 		elif self.state == 5:
 			print('double fall')
 
+		left, feet, right, top = self.get_bb()
+
 		if feet < 0:
 			x, y = self.move((0, get_canvas_height()))
 
 		platform = self.get_platform(feet)
 
 		if platform is not None:
-			left, bottom, right, top = platform.get_bb()
+			p_left, p_bottom, p_right, p_top = platform.get_bb()
 
 			if self.state in [Player.STANDING, Player.RUNNING]:
-				if feet > top:
+				if feet > p_top:
 					self.state = Player.FALLING
 					self.jump_speed = 0
 			else:
