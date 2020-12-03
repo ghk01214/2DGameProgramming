@@ -129,6 +129,9 @@ class Player:
 
 		x += dx * self.speed * self.mag * gfw.delta_time
 		y += dy * self.speed * self.mag * gfw.delta_time
+		if self.mag == 0:
+			print(int(left), int(right))
+		
 
 		self.pos = x, y
 		frame = self.time * 17
