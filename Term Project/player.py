@@ -98,7 +98,34 @@ class Player:
 						_, y = self.move((0, p_top - feet))
 						self.state = Player.STANDING
 						self.jump_speed = 0
+
+		if wall is not None:
+			w_left, w_bottom, w_right, w_top = wall.get_bb()
+
+			#왼쪽 방향
+			if dx == -1 and w_right > left and w_left < left:
+				self.mag = 0
+				print(1, int(left), int(right), self.pos)
+				print(w_left, w_right)
+			#오른쪽 방향
+			elif dx == 1 and w_left < right and w_left > left:
+				self.mag = 0
+				print(2)
+			else:
+				self.mag = 1
+
+			gab = (w_top + w_bottom) // 2
+
+			if y > gab and self.jump_speed <= 0:
+				if dx == -1 and w_right > left and w_left < left:
+					x, y = w_right - self.width // 2, w_top
 					self.jump_speed = 0
+				elif dx == 1 and w_left < right and w_left > left:
+					x, y = w_left - self.width // 2, w_top
+					self.jump_speed = 0
+		else:
+			self.mag = 1
+			x += dx * self.speed * self.mag * gfw.delta_time
 
 		x += dx * self.speed * self.mag * gfw.delta_time
 		y += dy * self.speed * self.mag * gfw.delta_time
