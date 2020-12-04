@@ -46,7 +46,7 @@ class Player:
 
 	def update(self):
 		x, y = self.pos
-		dx, dy = self.delta
+		dx, _ = self.delta
 		self.time += gfw.delta_time
 
 		if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING, Player.DOUBLE_FALL]:
