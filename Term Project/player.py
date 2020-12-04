@@ -59,19 +59,6 @@ class Player:
 			x, y = self.move((0, self.jump_speed * gfw.delta_time))
 			self.jump_speed -= Player.GRAVITY * self.mag * gfw.delta_time
 
-		if self.state == 0:
-			print('stand')
-		elif self.state == 1:
-			print('run')
-		elif self.state == 2:
-			print('jump')
-		elif self.state == 3:
-			print('double jump')
-		elif self.state == 4:
-			print('fall')
-		elif self.state == 5:
-			print('double fall')
-
 		left, feet, right, top = self.get_bb()
 
 		if feet < 0:
