@@ -12,10 +12,6 @@ class Player:
 		(SDL_KEYDOWN, SDLK_RIGHT): 	( 1,  0),
 		(SDL_KEYUP, SDLK_LEFT): 	( 1,  0),
 		(SDL_KEYUP, SDLK_RIGHT): 	(-1,  0),
-		(SDL_KEYDOWN, SDLK_UP):		( 0,  1),
-		(SDL_KEYDOWN, SDLK_DOWN): 	( 0, -1),
-		(SDL_KEYUP, SDLK_UP): 		( 0, -1),
-		(SDL_KEYUP, SDLK_DOWN): 	( 0,  1),
 	}
 
 	BB_DIFFS = [
@@ -71,7 +67,7 @@ class Player:
 
 		if platform is not None:
 			p_left, p_bottom, p_right, p_top = platform.get_bb()
-			
+
 			if self.state in [Player.STANDING, Player.RUNNING]:
 				if feet > p_top:
 					self.state = Player.FALLING
