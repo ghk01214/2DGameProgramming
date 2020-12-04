@@ -44,9 +44,6 @@ class Player:
 		self.imageType = 4
 		self.jump_speed = 0
 
-		global center
-		center = self.pos
-
 	def update(self):
 		x, y = self.pos
 		dx, dy = self.delta
@@ -66,7 +63,7 @@ class Player:
 		wall = self.get_wall(left, right)
 
 		if platform is not None:
-			p_left, p_bottom, p_right, p_top = platform.get_bb()
+			_, _, _, p_top = platform.get_bb()
 
 			if self.state in [Player.STANDING, Player.RUNNING]:
 				if feet > p_top:
@@ -84,7 +81,7 @@ class Player:
 						self.jump_speed = 0
 
 		if roof is not None:
-			r_left, r_bottom, r_right, r_top = roof.get_bb()
+			_, r_bottom, _, _ = roof.get_bb()
 
 			if head > r_bottom:
 				self.jump_speed = 0
@@ -94,7 +91,7 @@ class Player:
 
 
 		if wall is not None:
-			w_left, w_bottom, w_right, w_top = wall.get_bb()
+			w_left, _, w_right, _ = wall.get_bb()
 
 			#왼쪽 방향
 			if dx == -1 and w_right > left and w_left < left:
