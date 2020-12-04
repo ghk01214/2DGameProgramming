@@ -111,11 +111,12 @@ class Player:
 		if roof is not None:
 			_, r_bottom, _, _ = roof.get_bb()
 
-			if head > r_bottom:
-				self.jump_speed = 0
-				self.state = Player.FALLING
-				_, y = self.move((0, self.jump_speed * gfw.delta_time))
-				self.jump_speed -= Player.GRAVITY * gfw.delta_time
+			if self.state in [Player.JUMPING, Player.DOUBLE_JUMP]:
+				if head > r_bottom:
+					self.jump_speed = 0
+					self.state = Player.FALLING
+					_, y = self.move((0, self.jump_speed * gfw.delta_time))
+					self.jump_speed -= Player.GRAVITY * gfw.delta_time
 
 		#벽과의 충돌처리
 		if wall is not None:
