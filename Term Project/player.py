@@ -57,20 +57,21 @@ class Player:
 		self.time += gfw.delta_time
 
 		if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING, Player.DOUBLE_FALL]:
-			x, y = self.move((0, self.jump_speed * gfw.delta_time))
-			self.jump_speed -= Player.GRAVITY * self.mag * gfw.delta_time
+			_, y = self.move((0, self.jump_speed * gfw.delta_time))
+			self.jump_speed -= Player.GRAVITY * gfw.delta_time
 
-		left, feet, right, top = self.get_bb()
+		left, feet, right, head = self.get_bb()
 
 		if feet < 0:
 			x, y = self.move((0, get_canvas_height()))
 
 		platform = self.get_platform(feet)
+		roof = self.get_roof(head)
 		wall = self.get_wall(left, right)
 
 		if platform is not None:
 			p_left, p_bottom, p_right, p_top = platform.get_bb()
-
+			
 			if self.state in [Player.STANDING, Player.RUNNING]:
 				if feet > p_top:
 					self.state = Player.FALLING
@@ -86,39 +87,40 @@ class Player:
 						self.state = Player.STANDING
 						self.jump_speed = 0
 
+		if roof is not None:
+			r_left, r_bottom, r_right, r_top = roof.get_bb()
+
+			if head > r_bottom:
+				self.jump_speed = 0
+				self.state = Player.FALLING
+				_, y = self.move((0, self.jump_speed * gfw.delta_time))
+				self.jump_speed -= Player.GRAVITY * gfw.delta_time
+
+
 		if wall is not None:
 			w_left, w_bottom, w_right, w_top = wall.get_bb()
 
 			#왼쪽 방향
 			if dx == -1 and w_right > left and w_left < left:
 				self.mag = 0
-				print(1, int(left), int(right), self.pos)
-				print(w_left, w_right)
 			#오른쪽 방향
 			elif dx == 1 and w_left < right and w_left > left:
 				self.mag = 0
-				print(2)
 			else:
 				self.mag = 1
-
-			gab = (w_top + w_bottom) // 2
-
-			if y > gab and self.jump_speed <= 0:
-				if dx == -1 and w_right > left and w_left < left:
-					x, y = w_right - self.width // 2, w_top
-					self.jump_speed = 0
-				elif dx == 1 and w_left < right and w_left > left:
-					x, y = w_left - self.width // 2, w_top
-					self.jump_speed = 0
 		else:
 			self.mag = 1
-			x += dx * self.speed * self.mag * gfw.delta_time
 
-		if self.mag == 0:
-			print(int(left), int(right))
-		
+#			if y > mid and self.jump_speed <= 0:
+#				if dx == -1 and w_right > left and w_left < left:
+#					x, y = w_right - self.width // 2, w_top
+#					self.jump_speed = 0
+#				elif dx == 1 and w_left < right and w_left > left:
+#					x, y = w_left - self.width // 2, w_top
+#					self.jump_speed = 0
+
 		#y += dy * self.speed * self.mag * gfw.delta_time
-
+		x += dx * self.speed * self.mag * gfw.delta_time
 		self.pos = x, y
 		frame = self.time * 17
 		self.frame = int(frame) % self.imageType
@@ -127,18 +129,23 @@ class Player:
 		x, y = self.pos
 		sx = self.frame * self.width
 		sy = self.action * self.height + 1
-
-		self.pos = x, y			
+	
 		self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
 
 	def move(self, diff):
 		x, y = game_object.point_add(self.pos, diff)
 		return x, y
 
+	def get_bb(self):
+		left, bottom, right, top = Player.BB_DIFFS[self.state]
+		x, y = self.pos
+
+		return x + left, y + bottom, x + right, y + top
+
 	def get_platform(self, feet):
 		selected = None
 		sel_top = 0
-		x, y = self.pos
+		x, _ = self.pos
 
 		for platform in gfw.world.objects_at(gfw.layer.platform):
 			left, bottom, right, top = platform.get_bb()
@@ -180,20 +187,28 @@ class Player:
 
 		return selected
 
-	def wall_check(self, wall, selfLeft, selfRight):
-		x, y = self.pos
+	def get_roof(self, head):
+		selected = None
+		sel_bottom = 0
+		x, _ = self.pos
 
+		for platform in gfw.world.objects_at(gfw.layer.platform):
+			left, bottom, right, top = platform.get_bb()
 
-	def get_bb(self):
-		left, bottom, right, top = Player.BB_DIFFS[self.state]
-		x, y = self.pos
-		if self.mag != 1:
-			left *= self.mag
-			bottom *= self.mag
-			right *= self.mag
-			top *= self.mag
+			if x < left or x > right:
+				continue
 
-		return x + left, y + bottom, x + right, y + top
+			mid = (bottom + top) // 2
+
+			if head > mid:
+				continue
+
+			if selected is None:
+				selected = platform
+				sel_bottom = bottom
+				break
+
+		return selected
 
 	def handle_event(self, e):
 		pair = (e.type, e.key)
@@ -207,7 +222,7 @@ class Player:
 				Player.RUN_R if dx > 0 else \
 				Player.STAND_L if pdx < 0 else Player.STAND_R
 
-			if self.action == 4 or self.action == 5:
+			if self.action in [Player.RUN_L, Player.RUN_R]:
 				self.imageType = 5
 				self.width = 29
 				#self.state = Player.RUNNING
@@ -229,7 +244,7 @@ class Player:
 		elif self.state in [Player.JUMPING, Player.FALLING]:
 			self.state = Player.DOUBLE_JUMP
 
-		self.jump_speed = Player.JUMP * self.mag
+		self.jump_speed = Player.JUMP
 
 	def fire(self):
 		bullet = Bullet(pos)
