@@ -26,7 +26,7 @@ class Map:
 		self.layers = list(map(Layer, self.layers))
 		self.tilesets = list(map(Tileset, self.tilesets))
 
-class Background:
+class Tile:
 	def __init__(self, json_fn, tile_fn):
 		with open(json_fn) as f:
 			self.map = Map(json.load(f))

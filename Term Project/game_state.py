@@ -4,20 +4,20 @@ from game_object import *
 from player import Player
 #from background import Background
 from platform import Platform
-from tile import Background
+from tile import Tile
 from collision import check_collision
 import stage_gen
 
 def enter():
-	gfw.world.init(['background', 'platform', 'player', 'bullet'])
+	gfw.world.init(['tile', 'platform', 'player', 'bullet'])
 	center = get_canvas_width() // 2, get_canvas_height() // 2
 	#background = Background('stage_5.png')
-	background = Background('res/stage_1.json', 'res/bitmap/tileset.png')
-	gfw.world.add(gfw.layer.background, background)
+	tile = Tile('res/stage_1.json', 'res/bitmap/tileset.png')
+	gfw.world.add(gfw.layer.tile, tile)
 
 	global player
 	player = Player()
-	player.background = background
+	player.background = tile
 	gfw.world.add(gfw.layer.player, player)
 
 	stage_gen.load(resBM('../stage_1.txt'))
