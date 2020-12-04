@@ -55,7 +55,7 @@ class Player:
 
 		x, y = self.collides_platform(x, y, dx)
 
-		x += dx * self.speed * self.mag * gfw.delta_time
+		x, _ = self.move((dx * self.speed * self.mag * gfw.delta_time, 0))
 		self.pos = x, y
 		frame = self.time * 17
 		self.frame = int(frame) % self.imageType
@@ -69,6 +69,7 @@ class Player:
 
 	def move(self, diff):
 		x, y = game_object.point_add(self.pos, diff)
+
 		return x, y
 
 	def get_bb(self):
@@ -196,7 +197,6 @@ class Player:
 
 			if selected is None:
 				selected = platform
-				sel_bottom = bottom
 				break
 
 		return selected
