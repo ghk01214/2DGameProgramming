@@ -53,66 +53,8 @@ class Player:
 			_, y = self.move((0, self.jump_speed * gfw.delta_time))
 			self.jump_speed -= Player.GRAVITY * gfw.delta_time
 
-		left, feet, right, head = self.get_bb()
+		x, y = self.collides_platform(x, y, dx)
 
-		if feet < 0:
-			x, y = self.move((0, get_canvas_height()))
-
-		platform = self.get_platform(feet)
-		roof = self.get_roof(head)
-		wall = self.get_wall(left, right)
-
-		if platform is not None:
-			_, _, _, p_top = platform.get_bb()
-
-			if self.state in [Player.STANDING, Player.RUNNING]:
-				if feet > p_top:
-					self.state = Player.FALLING
-			else:
-				if self.jump_speed < 0:
-					if self.state == Player.JUMPING:
-						self.state = Player.FALLING
-					elif self.state == Player.DOUBLE_JUMP:
-						self.state = Player.DOUBLE_FALL
-
-					if int(feet) <= p_top:
-						_, y = self.move((0, p_top - feet))
-						self.state = Player.STANDING
-						self.jump_speed = 0
-
-		if roof is not None:
-			_, r_bottom, _, _ = roof.get_bb()
-
-			if head > r_bottom:
-				self.jump_speed = 0
-				self.state = Player.FALLING
-				_, y = self.move((0, self.jump_speed * gfw.delta_time))
-				self.jump_speed -= Player.GRAVITY * gfw.delta_time
-
-
-		if wall is not None:
-			w_left, _, w_right, _ = wall.get_bb()
-
-			#왼쪽 방향
-			if dx == -1 and w_right > left and w_left < left:
-				self.mag = 0
-			#오른쪽 방향
-			elif dx == 1 and w_left < right and w_left > left:
-				self.mag = 0
-			else:
-				self.mag = 1
-		else:
-			self.mag = 1
-
-#			if y > mid and self.jump_speed <= 0:
-#				if dx == -1 and w_right > left and w_left < left:
-#					x, y = w_right - self.width // 2, w_top
-#					self.jump_speed = 0
-#				elif dx == 1 and w_left < right and w_left > left:
-#					x, y = w_left - self.width // 2, w_top
-#					self.jump_speed = 0
-
-		#y += dy * self.speed * self.mag * gfw.delta_time
 		x += dx * self.speed * self.mag * gfw.delta_time
 		self.pos = x, y
 		frame = self.time * 17
@@ -134,6 +76,62 @@ class Player:
 		x, y = self.pos
 
 		return x + left, y + bottom, x + right, y + top
+
+	def collides_platform(self, x, y, dx):
+		left, feet, right, head = self.get_bb()
+
+		if feet < 0:
+			x, y = self.move((0, get_canvas_height()))
+
+		platform = self.get_platform(feet)
+		roof = self.get_roof(head)
+		wall = self.get_wall(left, right)
+
+		#바닥과의 충돌처리
+		if platform is not None:
+			_, _, _, p_top = platform.get_bb()
+
+			if self.state in [Player.STANDING, Player.RUNNING]:
+				if feet > p_top:
+					self.state = Player.FALLING
+			else:
+				if self.jump_speed < 0:
+					if self.state == Player.JUMPING:
+						self.state = Player.FALLING
+					elif self.state == Player.DOUBLE_JUMP:
+						self.state = Player.DOUBLE_FALL
+
+					if int(feet) <= p_top:
+						_, y = self.move((0, p_top - feet))
+						self.state = Player.STANDING
+						self.jump_speed = 0
+
+		#천장과의 충돌처리
+		if roof is not None:
+			_, r_bottom, _, _ = roof.get_bb()
+
+			if head > r_bottom:
+				self.jump_speed = 0
+				self.state = Player.FALLING
+				_, y = self.move((0, self.jump_speed * gfw.delta_time))
+				self.jump_speed -= Player.GRAVITY * gfw.delta_time
+
+		#벽과의 충돌처리
+		if wall is not None:
+			w_left, _, w_right, _ = wall.get_bb()
+
+			#왼쪽 방향
+			if dx == -1 and w_right > left and w_left < left:
+				self.mag = 0
+			#오른쪽 방향
+			elif dx == 1 and w_left < right and w_left > left:
+				self.mag = 0
+			else:
+				self.mag = 1
+		else:
+			self.mag = 1
+
+		return x, y
 
 	def get_platform(self, feet):
 		selected = None
