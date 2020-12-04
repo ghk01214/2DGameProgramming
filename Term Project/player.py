@@ -6,6 +6,7 @@ from bullet import Bullet
 
 class Player:
 	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING, DOUBLE_FALL = range(6)
+	FALL_L, FALL_R, JUMP_L, JUMP_R, RUN_L, RUN_R, STAND_L, STAND_R = range(8)
 	KEY_MAP = {
 		(SDL_KEYDOWN, SDLK_LEFT):	(-1,  0),
 		(SDL_KEYDOWN, SDLK_RIGHT): 	( 1,  0),
@@ -39,7 +40,7 @@ class Player:
 		self.speed = 200
 		self.time = 0
 		self.frame = 0
-		self.action = 7
+		self.action = Player.STAND_L
 		self.mag = 1
 		self.mag_speed = 0
 		self.state = Player.STANDING
@@ -202,9 +203,9 @@ class Player:
 			self.delta = point_add(self.delta, Player.KEY_MAP[pair])
 			dx, _ = self.delta
 			self.action = \
-				4 if dx < 0 else \
-				5 if dx > 0 else \
-				6 if pdx < 0 else 7
+				Player.RUN_L if dx < 0 else \
+				Player.RUN_R if dx > 0 else \
+				Player.STAND_L if pdx < 0 else Player.STAND_R
 
 			if self.action == 4 or self.action == 5:
 				self.imageType = 5
