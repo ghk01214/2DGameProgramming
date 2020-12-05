@@ -1,0 +1,19 @@
+bfsssssbbbbbbbbbbbbbbbbbb
+bs s         s     b    b
+b  b s bbssb   bbb b bs b
+   bcb  b  bs sb   b bb  
+bs bbb     bbbbb b b   bb
+b  b    bbbb     b b s  b
+b bb    b    bsb b bbbb b
+b  b b  b sbfbbbsbsbb b b
+bs b bssb sbbs bbbbbbbt b
+bb b  bbb sbt   bb      b
+b  bb sbc     b bl sbbbsb
+b bb  sb  s sbb b      bb
+b  bb  bbbb bbt bbbbb  cb
+b   bs     s    b   bs bb
+b b bbbbbb bs  sb s b   b
+bs  s s s  bb st  b b  sb
+bb b        b    bb  b  b
+bs   s s  bcb   bbbf   sb
+bbbbbbbbbsbbbbfbbbbbbbbbb
