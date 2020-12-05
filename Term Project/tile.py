@@ -10,7 +10,7 @@ class Tileset:
 	def __init__(self, dict):
 		self.__dict__.update(dict)
 		self.rows = math.ceil((self.tilecount + 25) / self.columns)
-		print('rows: ', self.rows)
+		#print('rows: ', self.rows)
 
 	def getRectForTile(self, tile):
 		x = (tile - 1) % self.columns
@@ -27,7 +27,7 @@ class Map:
 		self.tilesets = list(map(Tileset, self.tilesets))
 
 class Tile:
-	def __init__(self, json_fn, tile_fn):
+	def __init__(self, json_fn, tile_fn, player):
 		with open(json_fn) as f:
 			self.map = Map(json.load(f))
 
@@ -37,18 +37,22 @@ class Tile:
 		self.tileset = self.map.tilesets[0]
 		self.layer = self.map.layers[0]
 		self.wraps = True
-		self.speed_x, self.speed_y = 0, 0
-		self.scroll_x, self.scroll_y = 0, 0
+		self.player = player
+		self.scroll_x = 0
 
 	def get_boundary(self):
 		return 0, 0, self.width, self.height
 
 	def update(self):
-		self.scroll_x += self.speed_x * gfw.delta_time
-		self.scroll_y += self.speed_y * gfw.delta_time
+		px, py = self.player.pos
+
+		if px > get_canvas_width():
+			self.scroll_x += get_canvas_width()
+			px = 14
+			self.player.pos = px, py
 
 	def draw(self):
-		sx, sy = round(self.scroll_x), round(self.scroll_y)
+		sx, sy = round(self.scroll_x), 0
 
 		if self.wraps:
 			sx %= self.width

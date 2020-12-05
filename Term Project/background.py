@@ -3,25 +3,30 @@ from game_object import *
 import gfw
 
 class Background:
-	def __init__(self, imageName):
+	def __init__(self, imageName, player):
 		self.imageName = imageName
 		self.image = gfw.image.load(resBM(imageName))
-		self.canvas_w, self.canvas_h = get_canvas_width(), get_canvas_height()
-		self.win_rect = 0, 0, self.canvas_w, self.canvas_h
-		self.center = self.image.w // 2, self.image.h // 2
-		half_w, half_h = self.canvas_w // 2, self.canvas_h // 2
-		self.boundary = 0, 0, self.image.w, self.image.h
+		self.pos = 0, 0
+		self.cw, self.ch = get_canvas_width(), get_canvas_height()
+		self.player = player
 
 	def update(self):
-		pass
+		x, y = self.pos
+		p_x, p_y = self.player.pos
+
+		if p_x > self.cw:
+			x += self.cw
+			self.pos = x, y
 
 	def draw(self):
-		self.image.clip_draw(*self.win_rect, *self.center)
+		x, y = self.pos
+		self.image.clip_draw_to_origin(x, y, x + self.cw, y + self.ch, 0, 0)
 
-	def get_boundary(self):
-		return self.boundary
+	def get_bb(self):
+		x, y = self.pos
+		return x, y, x + self.cw, y + self.ch
 		
 	def to_screen(self, point):
 		x, y = point
-		l, b, r, t = self.win_rect
+		l, b, r, t = self.window
 		return x - l, y - b
