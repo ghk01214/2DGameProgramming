@@ -15,22 +15,34 @@ def enter():
 	gfw.world.init(['background', 'tile', 'save', 'bullet', 'platform', 'spike', 'player'])
 
 	global background, tile, player, stage_num
+	stage_num = 1
+	
 	player = Player()
 	gfw.world.add(gfw.layer.player, player)
 
-	stage_gen.load(resBM('../stage_1.txt'))
 	background = Background('background.png', player)
 	gfw.world.add(gfw.layer.background, background)
 
 	tile = Tile('res/tile_background.json', 'res/bitmap/tileset.png', player)
 	gfw.world.add(gfw.layer.tile, tile)
+
+	stage_gen.load(resBM('../stage_%d.txt' % stage_num))
 	save()
 
 def exit():
 	pass
 
 def update():
+	global player, stage_num
+	x, y = player.pos
+
 	gfw.world.update()
+
+	if x > get_canvas_width():
+		stage_num += 1
+		stage_gen.remove()
+		stage_gen.load(resBM('../stage_%d.txt' % stage_num))
+
 	stage_gen.update()
 
 def draw():
