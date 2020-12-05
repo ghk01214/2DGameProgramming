@@ -13,6 +13,10 @@ class Player:
 		(SDL_KEYUP, SDLK_LEFT): 	( 1,  0),
 		(SDL_KEYUP, SDLK_RIGHT): 	(-1,  0),
 	}
+	JUMP_MAP = {
+		(SDL_KEYDOWN, SDLK_LCTRL):	( 0, -1),
+		#(SDL_KEYUP, SDLK_LCTRL):	( 0,  1),
+	}
 
 	BB_DIFFS = [
 		(-14, -12, 12, 10),	#STANDING
@@ -24,7 +28,6 @@ class Player:
 		(-14, -12, 12, 10),	#DEAD
 	]
 
-	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
 	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
 
 	GRAVITY = 2000
@@ -92,15 +95,77 @@ class Player:
 
 		return x + left, y + bottom, x + right, y + top
 
+	def get_obj(self, feet, layer):
+		selected = None
+		sel_top = 0
+		x, _ = self.pos
+
+		for platform in gfw.world.objects_at(layer):
+			left, bottom, right, top = platform.get_bb()
+
+			if x < left or x > right:
+				continue
+
+			mid = (bottom + top) // 2
+
+			if feet < mid:
+				continue
+
+			if selected is None:
+				selected = platform
+				sel_top = top
+			else:
+				if top > sel_top:
+					selected = platform
+					sel_top = top
+
+		return selected
+
+	def get_obj_wall(self, selfLeft, selfRight, layer):
+		selected = None
+		_, y = self.pos
+
+		for platform in gfw.world.objects_at(layer):
+			left, bottom, right, top = platform.get_bb()
+
+			if y > top or y < bottom:
+				continue
+
+			if selfRight < left or selfLeft > right:
+				continue
+
+			selected = platform
+
+		return selected
+
+	def get_obj_roof(self, head, layer):
+		selected = None
+		sel_bottom = 0
+		x, _ = self.pos
+
+		for platform in gfw.world.objects_at(layer):
+			left, bottom, right, top = platform.get_bb()
+
+			if x < left or x > right:
+				continue
+
+			mid = (bottom + top) // 2
+
+			if head > mid:
+				continue
+
+			if selected is None:
+				selected = platform
+				break
+
+		return selected
+
 	def collides_platform(self, x, y, dx):
 		left, feet, right, head = self.get_bb()
 
-		if feet < 0:
-			x, y = self.move((0, get_canvas_height()))
-
-		platform = self.get_platform(feet)
-		roof = self.get_roof(head)
-		wall = self.get_wall(left, right)
+		platform = self.get_obj(feet, gfw.layer.platform)
+		roof = self.get_obj_roof(head, gfw.layer.platform)
+		wall = self.get_obj_wall(left, right, gfw.layer.platform)
 
 		#바닥과의 충돌처리
 		if platform is not None:
@@ -147,79 +212,171 @@ class Player:
 		else:
 			self.mag = 1
 
-		return x, y
+		return x, y, left, head
 
-	def get_platform(self, feet):
-		selected = None
-		sel_top = 0
-		x, _ = self.pos
+	def collides_spike(self, x, y, dx):
+		left, feet, right, head = self.get_bb()
 
-		for platform in gfw.world.objects_at(gfw.layer.platform):
-			left, bottom, right, top = platform.get_bb()
+		spike = self.get_obj(feet, gfw.layer.spike)
+		roof = self.get_obj_roof(head, gfw.layer.spike)
+		wall = self.get_obj_wall(left, right, gfw.layer.spike)
 
-			if x < left or x > right:
-				continue
+		#바닥과의 충돌처리
+		if spike is not None:
+			_, _, _, p_top = spike.get_bb()
 
-			mid = (bottom + top) // 2
-
-			if feet < mid:
-				continue
-
-			if selected is None:
-				selected = platform
-				sel_top = top
+			if self.state in [Player.STANDING, Player.RUNNING]:
+				if feet > p_top:
+					self.state = Player.FALLING
 			else:
-				if top > sel_top:
-					#print(sel_top)
-					#print(left, bottom, right, top)
-					selected = platform
-					sel_top = top
+				if self.jump_speed < 0:
+					if self.state == Player.JUMPING:
+						self.state = Player.FALLING
+					elif self.state == Player.DOUBLE_JUMP:
+						self.state = Player.DOUBLE_FALL
 
-		return selected
+					if int(feet) <= p_top:
+						_, y = self.move((0, p_top - feet))
+						self.state = Player.DEAD
+						self.jump_speed = 0
 
-	def get_wall(self, selfLeft, selfRight):
+		#천장과의 충돌처리
+		if roof is not None:
+			_, r_bottom, _, _ = roof.get_bb()
+
+			if self.state in [Player.JUMPING, Player.DOUBLE_JUMP]:
+				if head > r_bottom:
+					self.jump_speed = 0
+					self.state = Player.DEAD
+					_, y = self.move((0, self.jump_speed * gfw.delta_time))
+
+		#벽과의 충돌처리
+		if wall is not None:
+			w_left, _, w_right, _ = wall.get_bb()
+
+			#왼쪽 방향
+			if dx == -1 and w_right > left and w_left < left:
+				self.state = Player.DEAD
+			#오른쪽 방향
+			elif dx == 1 and w_left < right and w_left > left:
+				self.state = Player.DEAD
+
+	def collides_save(self, x, y, dx):
+		left, feet, right, head = self.get_bb()
+
+		platform = self.get_obj(feet, gfw.layer.save)
+		roof = self.get_obj_roof(head, gfw.layer.save)
+		wall = self.get_obj_wall(left, right, gfw.layer.save)
+
+		#바닥과의 충돌처리
+		if platform is not None:
+			_, _, _, p_top = platform.get_bb()
+
+			if self.state in [Player.STANDING, Player.RUNNING]:
+				if feet > p_top:
+					self.state = Player.FALLING
+			else:
+				if self.jump_speed < 0:
+					if self.state == Player.JUMPING:
+						self.state = Player.FALLING
+					elif self.state == Player.DOUBLE_JUMP:
+						self.state = Player.DOUBLE_FALL
+
+					if int(feet) <= p_top:
+						_, y = self.move((0, p_top - feet))
+						self.state = Player.STANDING
+						self.jump_speed = 0
+
+		#천장과의 충돌처리
+		if roof is not None:
+			_, r_bottom, _, _ = roof.get_bb()
+
+			if self.state in [Player.JUMPING, Player.DOUBLE_JUMP]:
+				if head > r_bottom:
+					self.jump_speed = 0
+					self.state = Player.FALLING
+					_, y = self.move((0, self.jump_speed * gfw.delta_time))
+					self.jump_speed -= Player.GRAVITY * gfw.delta_time
+
+		#벽과의 충돌처리
+		if wall is not None:
+			w_left, _, w_right, _ = wall.get_bb()
+
+			#왼쪽 방향
+			if dx == -1 and w_right > left and w_left < left:
+				self.mag = 0
+			#오른쪽 방향
+			elif dx == 1 and w_left < right and w_left > left:
+				self.mag = 0
+			else:
+				self.mag = 1
+		else:
+			self.mag = 1
+
+		return x, y, left, head
+
+	def bullet_collision(self):
+		global bullet
+
+		left, bottom, right, top = bullet.get_bb()
+
+		wall = self.get_bullet_wall()
+		spike = self.get_bullet_spike()
+
+		if wall is not None:
+			w_left, _, w_right, _ = wall.get_bb()
+
+			if right > w_left or left < w_right:
+				gfw.world.remove(bullet)
+
+		if spike is not None:
+			s_left, _, s_right, _ = spike.get_bb()
+
+			mid = (s_left + s_right) // 2
+
+			if right > mid or left < mid:
+				gfw.world.remove(bullet)
+
+	def get_bullet_wall(self):
+		global bullet
+
 		selected = None
-		_, y = self.pos
 
 		for platform in gfw.world.objects_at(gfw.layer.platform):
 			left, bottom, right, top = platform.get_bb()
 
-			if y > top or y < bottom:
+			if bullet.y > top or bullet.y < bottom:
 				continue
 
-			if selfRight < left or selfLeft > right:
+			if bullet.x < left or bullet.x > right:
 				continue
 
 			selected = platform
 
 		return selected
 
-	def get_roof(self, head):
+	def get_bullet_spike(self):
+		global bullet
+
 		selected = None
-		sel_bottom = 0
-		x, _ = self.pos
 
-		for platform in gfw.world.objects_at(gfw.layer.platform):
-			left, bottom, right, top = platform.get_bb()
+		for spike in gfw.world.objects_at(gfw.layer.spike):
+			left, bottom, right, top = spike.get_bb()
 
-			if x < left or x > right:
+			if bullet.y > top or bullet.y < bottom:
 				continue
 
-			mid = (bottom + top) // 2
-
-			if head > mid:
+			if bullet.x < left or bullet.x > right:
 				continue
 
-			if selected is None:
-				selected = platform
-				break
+			selected = platform
 
 		return selected
 
 	def handle_event(self, e):
 		pair = (e.type, e.key)
 
-		if pair in Player.KEY_MAP:
+		if pair in Player.KEY_MAP and self.state != Player.DEAD:
 			pdx, _ = self.delta
 			self.delta = point_add(self.delta, Player.KEY_MAP[pair])
 			dx, _ = self.delta
@@ -237,7 +394,7 @@ class Player:
 				self.width = 28
 				#self.state = Player.STANDING
 
-		elif pair == Player.KEYDOWN_JUMP:
+		elif pair in Player.JUMP_MAP:
 			self.jump()
 #		elif pair == Player.KEYDOWN_SHOOT:
 #			self.fire()
