@@ -2,7 +2,7 @@ from pico2d import *
 from game_object import *
 import gfw
 import game_object
-from bullet import Bullet
+from object import Bullet
 
 class Player:
 	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING, DOUBLE_FALL = range(6)
@@ -225,8 +225,8 @@ class Player:
 
 		elif pair == Player.KEYDOWN_JUMP:
 			self.jump()
-		elif pair == Player.KEYDOWN_SHOOT:
-			fire()
+#		elif pair == Player.KEYDOWN_SHOOT:
+#			self.fire()
 
 	def jump(self):
 		if self.state == Player.DOUBLE_FALL:
@@ -239,6 +239,17 @@ class Player:
 		self.jump_speed = Player.JUMP
 
 	def fire(self):
-		bullet = Bullet(pos)
-		Bullet.bullets.append(bullet)
-		print("bullet count = %d" % len(Bullet.bullets))
+		global bullet
+
+		left, _, right, _ = self.get_bb()
+		_, y = self.pos
+
+		if self.action in [Player.STAND_L, Player.RUN_L, Player.JUMP_L, Player.FALL_L]:
+			direction = -1
+			x = left
+		else:
+			direction = 1
+			x = right
+
+		bullet = Bullet(x, y, direction)
+		gfw.world.add(gfw.layer.bullet, bullet)
