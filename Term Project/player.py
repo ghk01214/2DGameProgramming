@@ -5,7 +5,7 @@ import game_object
 from object import Bullet
 
 class Player:
-	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING, DOUBLE_FALL = range(6)
+	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING, DOUBLE_FALL, DEAD = range(7)
 	FALL_L, FALL_R, JUMP_L, JUMP_R, RUN_L, RUN_R, STAND_L, STAND_R = range(8)
 	KEY_MAP = {
 		(SDL_KEYDOWN, SDLK_LEFT):	(-1,  0),
@@ -21,6 +21,7 @@ class Player:
 		(-11, -12, 11, 10),	#DOUBLE_JUMP
 		(-14, -12, 12, 10),	#FALLING
 		(-14, -12, 12, 10),	#DOUBLE_FALL
+		(-14, -12, 12, 10),	#DEAD
 	]
 
 	KEYDOWN_JUMP = (SDL_KEYDOWN, SDLK_LCTRL)
@@ -53,12 +54,25 @@ class Player:
 			_, y = self.move((0, self.jump_speed * gfw.delta_time))
 			self.jump_speed -= Player.GRAVITY * gfw.delta_time
 
-		x, y = self.collides_platform(x, y, dx)
+		x, y, left, head = self.collides_platform(x, y, dx)
+		#self.collides_spike(x, y, dx)
 
-		x, _ = self.move((dx * self.speed * self.mag * gfw.delta_time, 0))
-		self.pos = x, y
-		frame = self.time * 17
-		self.frame = int(frame) % self.imageType
+		if self.state != Player.DEAD:
+			temp_x = x
+			x, _ = self.move((dx * self.speed * self.mag * gfw.delta_time, 0))
+
+			if x < self.width // 2:
+				x = temp_x
+
+			if y > get_canvas_height() - self.height // 2:
+				self.jump_speed = 0
+				self.state = Player.FALLING
+				_, y = self.move((0, self.jump_speed * gfw.delta_time))
+				self.jump_speed -= Player.GRAVITY * gfw.delta_time
+
+			self.pos = x, y
+			frame = self.time * 17
+			self.frame = int(frame) % self.imageType
 
 	def draw(self):
 		x, y = self.pos
