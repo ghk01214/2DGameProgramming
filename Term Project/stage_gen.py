@@ -1,7 +1,9 @@
 from pico2d import *
 import gfw
 import game_object
+from object import Save
 from platform import Platform
+from spike import Spike, HalfSpike
 
 UNIT_PER_LINE = 25
 SCREEN_LINES = 19
@@ -37,19 +39,42 @@ def create_column():
 ignore_char_map = set()
 
 def create_object(ch, x, y):
+	x -= BLOCK_SIZE // 2
+	y -= BLOCK_SIZE // 2
+
 	if ch == 'b':
-		y -= BLOCK_SIZE // 2
-		x -= BLOCK_SIZE // 2
-		obj = Platform(ord(ch) - ord('b'), x, y)
+		obj = Platform(x, y)
 		gfw.world.add(gfw.layer.platform, obj)
 	elif ch == 's':
-		dy = 1
-		y -= int(dy * BLOCK_SIZE) // 2
-		x -= BLOCK_SIZE // 2
-		#obj = Platform(ord(ch) - ord('b'), x, y)
-		#gfw.world.add(gfw.layer.platform, obj)
+		obj = Spike(x, y)
+		gfw.world.add(gfw.layer.spike, obj)
+	elif ch == 'l':
+		obj = HalfSpike(0, x, y)
+		gfw.world.add(gfw.layer.spike, obj)
+	elif ch == 'f':
+		obj = HalfSpike(1, x, y)
+		gfw.world.add(gfw.layer.spike, obj)
+	elif ch == 'r':
+		obj = HalfSpike(2, x, y)
+		gfw.world.add(gfw.layer.spike, obj)
+	elif ch == 't':
+		obj = HalfSpike(3, x, y)
+		gfw.world.add(gfw.layer.spike, obj)
+	elif ch == 'c':
+		obj = Save(x, y)
+		gfw.world.add(gfw.layer.save, obj)
 
 def get(x, y):
 	col = x % UNIT_PER_LINE
 	row = x // UNIT_PER_LINE * SCREEN_LINES + SCREEN_LINES - 1 - y
 	return lines[row][col]
+
+def remove():
+	for obj in gfw.world.objects_at(gfw.layer.platform):
+		gfw.world.remove(obj)
+
+	for obj in gfw.world.objects_at(gfw.layer.spike):
+		gfw.world.remove(obj)
+
+	for obj in gfw.world.objects_at(gfw.layer.save):
+		gfw.world.remove(obj)
