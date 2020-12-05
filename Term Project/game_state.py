@@ -2,7 +2,7 @@ from pico2d import *
 import gfw
 from game_object import *
 from player import Player
-#from background import Background
+from background import Background
 from platform import Platform
 from tile import Tile
 from collision import check_collision
@@ -12,18 +12,18 @@ import pickle
 FILENAME = 'save.data'
 
 def enter():
-	gfw.world.init(['tile', 'platform', 'player', 'bullet'])
-	center = get_canvas_width() // 2, get_canvas_height() // 2
-	#background = Background('stage_5.png')
-	tile = Tile('res/stage_1.json', 'res/bitmap/tileset.png')
-	gfw.world.add(gfw.layer.tile, tile)
+	gfw.world.init(['background', 'tile', 'save', 'bullet', 'platform', 'spike', 'player'])
 
 	global background, tile, player, stage_num
 	player = Player()
-	player.background = tile
 	gfw.world.add(gfw.layer.player, player)
 
 	stage_gen.load(resBM('../stage_1.txt'))
+	background = Background('background.png', player)
+	gfw.world.add(gfw.layer.background, background)
+
+	tile = Tile('res/tile_background.json', 'res/bitmap/tileset.png', player)
+	gfw.world.add(gfw.layer.tile, tile)
 	save()
 
 def exit():
