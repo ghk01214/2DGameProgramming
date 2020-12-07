@@ -48,8 +48,6 @@ class Tile:
 
 		if px > get_canvas_width():
 			self.scroll_x += get_canvas_width()
-			px = 14
-			self.player.pos = px, py
 
 	def draw(self):
 		sx, sy = round(self.scroll_x), 0

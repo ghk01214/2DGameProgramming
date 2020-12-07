@@ -2,7 +2,7 @@ from pico2d import *
 import gfw
 import game_object
 from object import Save
-from platform import Platform
+from plat import Platform
 from spike import Spike, HalfSpike
 
 UNIT_PER_LINE = 25
@@ -11,14 +11,15 @@ BLOCK_SIZE = 32
 
 lines = []
 
-def load(file):
-	global lines, current_x, create_at, map_index
+def load(file, end):
+	global lines, current_x, create_at, map_index, ending
 	with open(file, 'r') as f:
 		lines = f.readlines()
 
 	current_x = 15
 	map_index = 0
 	create_at = get_canvas_width()
+	ending = end
 
 def update():
 	while current_x < create_at:
@@ -39,6 +40,8 @@ def create_column():
 ignore_char_map = set()
 
 def create_object(ch, x, y):
+	global ending
+
 	x -= BLOCK_SIZE // 2
 	y -= BLOCK_SIZE // 2
 
