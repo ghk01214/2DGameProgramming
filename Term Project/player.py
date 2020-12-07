@@ -3,6 +3,7 @@ from game_object import *
 import gfw
 import game_object
 from object import Bullet
+import music
 
 class Player:
 	STANDING, RUNNING, JUMPING, DOUBLE_JUMP, FALLING, DOUBLE_FALL, DEAD = range(7)
@@ -12,10 +13,6 @@ class Player:
 		(SDL_KEYDOWN, SDLK_RIGHT): 	( 1,  0),
 		(SDL_KEYUP, SDLK_LEFT): 	( 1,  0),
 		(SDL_KEYUP, SDLK_RIGHT): 	(-1,  0),
-	}
-	JUMP_MAP = {
-		(SDL_KEYDOWN, SDLK_LCTRL):	( 0, -1),
-		#(SDL_KEYUP, SDLK_LCTRL):	( 0,  1),
 	}
 
 	BB_DIFFS = [
@@ -28,7 +25,8 @@ class Player:
 		(-14, -12, 12, 10),	#DEAD
 	]
 
-	KEYDOWN_SHOOT = (SDL_KEYDOWN, SDLK_z)
+	JUMP_MAP = (SDL_KEYDOWN, SDLK_x)
+	SHOOT_MAP = (SDL_KEYDOWN, SDLK_z)
 
 	GRAVITY = 2000
 	JUMP = 500
@@ -36,29 +34,52 @@ class Player:
 	def __init__(self):
 		self.image = gfw.image.load(resBM('animation.png'))
 		self.pos = 600, 530
-		self.delta = 0, 0
+		self.delta = 0
 		self.speed = 200
 		self.time = 0
 		self.frame = 0
-		self.action = Player.STAND_L
+		self.action = Player.FALL_L
 		self.mag = 1
 		self.mag_speed = 0
-		self.state = Player.STANDING
+		self.state = Player.FALLING
 		self.width, self.height = 28, 25
-		self.imageType = 4
+		self.imageType = 2
 		self.jump_speed = 0
+		self.on_floor = False
+
+		self.jump_sound = None
+		self.dead_sound = None
+		self.shot_sound = None
+		self.coffin_dance = None
+		self.play_over = 0
+		self.saved = False
+		self.bullet = None
+		self.saveImage = gfw.image.load(resBM('save(a).png'))
+		self.save_time = -1
+		self.save_point = None
+		self.game_over = gfw.image.load(resBM('game_over.png'))
+		self.revived = False
 
 	def update(self):
 		x, y = self.pos
-		dx, _ = self.delta
+		dx = self.delta
 		self.time += gfw.delta_time
+
+		if self.save_time >= 0.0 and self.save_time < 1.0:
+			self.save_time += gfw.delta_time
+
+		if self.save_time > 1.0:
+			self.save_time = -1
 
 		if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING, Player.DOUBLE_FALL]:
 			_, y = self.move((0, self.jump_speed * gfw.delta_time))
 			self.jump_speed -= Player.GRAVITY * gfw.delta_time
 
-		x, y, left, head = self.collides_platform(x, y, dx)
-		#self.collides_spike(x, y, dx)
+		x, y, self.left = self.collides_platform(x, y, dx)
+		self.collides_spike(x, y, dx)
+
+		if self.bullet is not None:
+			self.bullet_collision()
 
 		if self.state != Player.DEAD:
 			temp_x = x
@@ -68,7 +89,6 @@ class Player:
 				x = temp_x
 
 			if y > get_canvas_height() - self.height // 2:
-				self.jump_speed = 0
 				self.state = Player.FALLING
 				_, y = self.move((0, self.jump_speed * gfw.delta_time))
 				self.jump_speed -= Player.GRAVITY * gfw.delta_time
@@ -77,12 +97,29 @@ class Player:
 			frame = self.time * 17
 			self.frame = int(frame) % self.imageType
 
+			self.dead_sound = None
+			self.play_over = 0
+		else:
+			self.play_over += 1
+
+			if self.play_over == 1:
+				self.dead_sound = music.wav(game_object.resSE('dead.wav'), False)
+			elif self.play_over == 35:
+				self.coffin_dance = music.mp3(game_object.resSE('game_over.mp3'), True)
+
 	def draw(self):
 		x, y = self.pos
 		sx = self.frame * self.width
 		sy = self.action * self.height + 1
-	
-		self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
+
+		if self.save_time > 0.0 and self.save_time < 1.0:
+			self.saveImage.clip_draw_to_origin(0, 0, self.save_point.width, self.save_point.height, self.save_point.left, self.save_point.bottom)
+		
+		if self.state != Player.DEAD:
+			self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
+		
+		if self.play_over > 35:
+			self.game_over.draw(get_canvas_width() // 2, get_canvas_height() // 2)
 
 	def move(self, diff):
 		x, y = game_object.point_add(self.pos, diff)
@@ -90,7 +127,12 @@ class Player:
 		return x, y
 
 	def get_bb(self):
-		left, bottom, right, top = Player.BB_DIFFS[self.state]
+		global state
+
+		if self.state in range(7):
+			state = self.state
+
+		left, bottom, right, top = Player.BB_DIFFS[state]
 		x, y = self.pos
 
 		return x + left, y + bottom, x + right, y + top
@@ -181,10 +223,21 @@ class Player:
 					elif self.state == Player.DOUBLE_JUMP:
 						self.state = Player.DOUBLE_FALL
 
+					if self.action in [Player.JUMP_L, Player.JUMP_R]:
+						self.action -= 2
+						self.width = 28
+
 					if int(feet) <= p_top:
 						_, y = self.move((0, p_top - feet))
+
+						if self.action in [Player.FALL_L, Player.FALL_R] and self.state in [Player.FALLING, Player.DOUBLE_FALL]:
+							self.action += 6
+							self.width = 28
+							self.imageType = 4
+
 						self.state = Player.STANDING
 						self.jump_speed = 0
+						self.on_floor = True
 
 		#천장과의 충돌처리
 		if roof is not None:
@@ -212,7 +265,7 @@ class Player:
 		else:
 			self.mag = 1
 
-		return x, y, left, head
+		return x, y, left
 
 	def collides_spike(self, x, y, dx):
 		left, feet, right, head = self.get_bb()
@@ -225,20 +278,16 @@ class Player:
 		if spike is not None:
 			_, _, _, p_top = spike.get_bb()
 
-			if self.state in [Player.STANDING, Player.RUNNING]:
-				if feet > p_top:
+			if self.jump_speed < 0:
+				if self.state == Player.JUMPING:
 					self.state = Player.FALLING
-			else:
-				if self.jump_speed < 0:
-					if self.state == Player.JUMPING:
-						self.state = Player.FALLING
-					elif self.state == Player.DOUBLE_JUMP:
-						self.state = Player.DOUBLE_FALL
+				elif self.state == Player.DOUBLE_JUMP:
+					self.state = Player.DOUBLE_FALL
 
-					if int(feet) <= p_top:
-						_, y = self.move((0, p_top - feet))
-						self.state = Player.DEAD
-						self.jump_speed = 0
+				if int(feet) <= p_top:
+					_, y = self.move((0, p_top - feet))
+					self.state = Player.DEAD
+					self.jump_speed = 0
 
 		#천장과의 충돌처리
 		if roof is not None:
@@ -261,73 +310,19 @@ class Player:
 			elif dx == 1 and w_left < right and w_left > left:
 				self.state = Player.DEAD
 
-	def collides_save(self, x, y, dx):
-		left, feet, right, head = self.get_bb()
-
-		platform = self.get_obj(feet, gfw.layer.save)
-		roof = self.get_obj_roof(head, gfw.layer.save)
-		wall = self.get_obj_wall(left, right, gfw.layer.save)
-
-		#바닥과의 충돌처리
-		if platform is not None:
-			_, _, _, p_top = platform.get_bb()
-
-			if self.state in [Player.STANDING, Player.RUNNING]:
-				if feet > p_top:
-					self.state = Player.FALLING
-			else:
-				if self.jump_speed < 0:
-					if self.state == Player.JUMPING:
-						self.state = Player.FALLING
-					elif self.state == Player.DOUBLE_JUMP:
-						self.state = Player.DOUBLE_FALL
-
-					if int(feet) <= p_top:
-						_, y = self.move((0, p_top - feet))
-						self.state = Player.STANDING
-						self.jump_speed = 0
-
-		#천장과의 충돌처리
-		if roof is not None:
-			_, r_bottom, _, _ = roof.get_bb()
-
-			if self.state in [Player.JUMPING, Player.DOUBLE_JUMP]:
-				if head > r_bottom:
-					self.jump_speed = 0
-					self.state = Player.FALLING
-					_, y = self.move((0, self.jump_speed * gfw.delta_time))
-					self.jump_speed -= Player.GRAVITY * gfw.delta_time
-
-		#벽과의 충돌처리
-		if wall is not None:
-			w_left, _, w_right, _ = wall.get_bb()
-
-			#왼쪽 방향
-			if dx == -1 and w_right > left and w_left < left:
-				self.mag = 0
-			#오른쪽 방향
-			elif dx == 1 and w_left < right and w_left > left:
-				self.mag = 0
-			else:
-				self.mag = 1
-		else:
-			self.mag = 1
-
-		return x, y, left, head
-
 	def bullet_collision(self):
-		global bullet
+		left, bottom, right, top = self.bullet.get_bb()
 
-		left, bottom, right, top = bullet.get_bb()
-
-		wall = self.get_bullet_wall()
-		spike = self.get_bullet_spike()
+		wall = self.get_bullet(gfw.layer.platform)
+		spike = self.get_bullet(gfw.layer.spike)
+		save = self.get_bullet(gfw.layer.save)
 
 		if wall is not None:
 			w_left, _, w_right, _ = wall.get_bb()
 
 			if right > w_left or left < w_right:
-				gfw.world.remove(bullet)
+				gfw.world.remove(self.bullet)
+				self.bullet = None
 
 		if spike is not None:
 			s_left, _, s_right, _ = spike.get_bb()
@@ -335,38 +330,29 @@ class Player:
 			mid = (s_left + s_right) // 2
 
 			if right > mid or left < mid:
-				gfw.world.remove(bullet)
+				gfw.world.remove(self.bullet)
+				self.bullet = None
 
-	def get_bullet_wall(self):
-		global bullet
+		if save is not None:
+			c_left, _, c_right, _ = save.get_bb()
 
+			if left > c_left or right < c_right:
+				gfw.world.remove(self.bullet)
+				self.bullet = None
+				self.saved = True
+				self.save_time = 0
+				self.save_point = save
+
+	def get_bullet(self, layer):
 		selected = None
 
-		for platform in gfw.world.objects_at(gfw.layer.platform):
+		for platform in gfw.world.objects_at(layer):
 			left, bottom, right, top = platform.get_bb()
 
-			if bullet.y > top or bullet.y < bottom:
+			if self.bullet.y > top or self.bullet.y < bottom:
 				continue
 
-			if bullet.x < left or bullet.x > right:
-				continue
-
-			selected = platform
-
-		return selected
-
-	def get_bullet_spike(self):
-		global bullet
-
-		selected = None
-
-		for spike in gfw.world.objects_at(gfw.layer.spike):
-			left, bottom, right, top = spike.get_bb()
-
-			if bullet.y > top or bullet.y < bottom:
-				continue
-
-			if bullet.x < left or bullet.x > right:
+			if self.bullet.x < left or self.bullet.x > right:
 				continue
 
 			selected = platform
@@ -377,41 +363,51 @@ class Player:
 		pair = (e.type, e.key)
 
 		if pair in Player.KEY_MAP and self.state != Player.DEAD:
-			pdx, _ = self.delta
-			self.delta = point_add(self.delta, Player.KEY_MAP[pair])
-			dx, _ = self.delta
-			self.action = \
-				Player.RUN_L if dx < 0 else \
-				Player.RUN_R if dx > 0 else \
-				Player.STAND_L if pdx < 0 else Player.STAND_R
-
-			if self.action in [Player.RUN_L, Player.RUN_R]:
-				self.imageType = 5
-				self.width = 29
-				#self.state = Player.RUNNING
+			if self.revived and e.type == SDL_KEYUP:
+				pass
 			else:
-				self.imageType = 4
-				self.width = 28
-				#self.state = Player.STANDING
+				pdx = self.delta
+				self.delta, _ = point_add((self.delta, 0), Player.KEY_MAP[pair])
+				dx = self.delta
 
-		elif pair in Player.JUMP_MAP:
+				self.action = \
+					Player.RUN_L if dx < 0 else \
+					Player.RUN_R if dx > 0 else \
+					Player.STAND_L if pdx < 0 else Player.STAND_R
+
+				if self.action in [Player.RUN_L, Player.RUN_R]:
+					self.imageType = 5
+					self.width = 29
+				elif self.action in [Player.STAND_L, Player.STAND_R]:
+					self.imageType = 4
+					self.width = 28
+
+			self.revived = False
+
+		elif pair == Player.JUMP_MAP:
 			self.jump()
-#		elif pair == Player.KEYDOWN_SHOOT:
-#			self.fire()
+		elif pair == Player.SHOOT_MAP:
+			self.fire()
 
 	def jump(self):
-		if self.state == Player.DOUBLE_FALL:
+		if self.state in [Player.DOUBLE_JUMP, Player.DOUBLE_FALL]:
 			return
 		elif self.state in [Player.STANDING, Player.RUNNING]:
 			self.state = Player.JUMPING
+			self.jump_sound = music.wav(game_object.resSE('jump.wav'), False)
 		elif self.state in [Player.JUMPING, Player.FALLING]:
 			self.state = Player.DOUBLE_JUMP
+			self.jump_sound = music.wav(game_object.resSE('double_jump.wav'), False)
+		if self.action in [Player.STAND_L, Player.RUN_L, Player.JUMP_L, Player.FALL_L]:
+			self.action = Player.JUMP_L
+		elif self.action in [Player.STAND_R, Player.RUN_R, Player.JUMP_R, Player.FALL_R]:
+			self.action = Player.JUMP_R
 
+		self.imageType = 2
+		self.width = 22
 		self.jump_speed = Player.JUMP
 
 	def fire(self):
-		global bullet
-
 		left, _, right, _ = self.get_bb()
 		_, y = self.pos
 
@@ -422,5 +418,6 @@ class Player:
 			direction = 1
 			x = right
 
-		bullet = Bullet(x, y, direction)
-		gfw.world.add(gfw.layer.bullet, bullet)
+		self.bullet = Bullet(x, y, direction)
+		self.shot_sound = music.wav(game_object.resSE('bullet.wav'), False)
+		gfw.world.add(gfw.layer.bullet, self.bullet)
