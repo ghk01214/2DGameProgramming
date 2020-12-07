@@ -1,11 +1,13 @@
 from pico2d import *
 import gfw
 from game_object import *
-import game_state
+import main
+import music
 
 def enter():
-	global image
+	global image, bgm
 	image = gfw.image.load(resBM('title.png'))
+	bgm = music.mp3(resSE('title.mp3'), True)
 
 def update():
 	pass
@@ -17,13 +19,10 @@ def handle_event(e):
 	if e.type == SDL_QUIT:
 		gfw.quit()
 	elif e.type == SDL_KEYDOWN:
-		if e.key == SDLK_ESCAPE:
-			gfw.pop()
-		elif e.key == SDLK_q:
+		if e.key in [SDLK_ESCAPE, SDLK_q]:
 			gfw.quit()
-		elif e.key == SDLK_SPACE:
-			gfw.push(game_state)
-
+		elif e.key in [SDLK_RETURN, SDLK_KP_ENTER]:
+			gfw.push(main)
 
 def pause():
 	pass

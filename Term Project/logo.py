@@ -1,23 +1,24 @@
 from pico2d import *
 import gfw
 from game_object import *
-import title_state
+import title
 import time
+import music
 
 def enter():
-	global image
-	global logo_time
+	global image, logo_time, bgm
 
 	image = gfw.image.load(resBM('logo.png'))
 	logo_time = 0
+	bgm = music.mp3(resSE('logo.mp3'), False)
 
 def update():
-	global logo_time
+	global logo_time, bgm
 
 	logo_time += gfw.delta_time
 
-	if logo_time > 1.0:
-		gfw.change(title_state)
+	if logo_time > 3.0:
+		gfw.change(title)
 
 def draw():
 	image.draw(400, 300)
