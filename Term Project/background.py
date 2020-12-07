@@ -9,6 +9,7 @@ class Background:
 		self.pos = 0, 0
 		self.cw, self.ch = get_canvas_width(), get_canvas_height()
 		self.player = player
+		self.draw_pos = 0, 0
 
 	def update(self):
 		x, y = self.pos
@@ -20,7 +21,8 @@ class Background:
 
 	def draw(self):
 		x, y = self.pos
-		self.image.clip_draw_to_origin(x, y, x + self.cw, y + self.ch, 0, 0)
+		dx, dy = self.draw_pos
+		self.image.clip_draw_to_origin(x, y, x + self.cw, y + self.ch, dx, dy)
 
 	def get_bb(self):
 		x, y = self.pos
