@@ -107,9 +107,6 @@ def load():
 
 	temp_stage = stage_num
 
-	if player.state == 6:
-		bgm = music.mp3(resSE('stage_%d.mp3' % temp_stage), True)
-
 	try:
 		with open(FILENAME, "rb") as file:
 			stage_num = pickle.load(file)

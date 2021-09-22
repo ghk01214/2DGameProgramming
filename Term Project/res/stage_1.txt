@@ -8,7 +8,7 @@ b tb  bb     b   s f  bbb
 b  b   bl   sb  bbbbssb b
 bf bbbbbb ffbb     bbbbbb
 bt b   bs bbbbs        bb
-b    s b  b  bblrl f   bb
+bc   s bc b  bblrl f   bb
 bbbbb  bbbb   bbbbbbb   b
 b      bt   b b       f b
 b fbbbbb  f t   s     bbb

@@ -104,8 +104,6 @@ class Player:
 
 			if self.play_over == 1:
 				self.dead_sound = music.wav(game_object.resSE('dead.wav'), False)
-			elif self.play_over == 35:
-				self.coffin_dance = music.mp3(game_object.resSE('game_over.mp3'), True)
 
 	def draw(self):
 		x, y = self.pos
@@ -118,7 +116,7 @@ class Player:
 		if self.state != Player.DEAD:
 			self.image.clip_draw(sx, sy, self.width, self.height, *self.pos)
 		
-		if self.play_over > 35:
+		if self.play_over > 0:
 			self.game_over.draw(get_canvas_width() // 2, get_canvas_height() // 2)
 
 	def move(self, diff):
@@ -127,12 +125,7 @@ class Player:
 		return x, y
 
 	def get_bb(self):
-		global state
-
-		if self.state in range(7):
-			state = self.state
-
-		left, bottom, right, top = Player.BB_DIFFS[state]
+		left, bottom, right, top = Player.BB_DIFFS[self.state]
 		x, y = self.pos
 
 		return x + left, y + bottom, x + right, y + top
@@ -245,8 +238,12 @@ class Player:
 
 			if self.state in [Player.JUMPING, Player.DOUBLE_JUMP]:
 				if head > r_bottom:
+					if self.state == Player.JUMPING:
+						self.state = Player.FALLING
+					elif self.state == Player.DOUBLE_JUMP:
+						self.state = Player.DOUBLE_JUMP
+
 					self.jump_speed = 0
-					self.state = Player.FALLING
 					_, y = self.move((0, self.jump_speed * gfw.delta_time))
 					self.jump_speed -= Player.GRAVITY * gfw.delta_time
 
@@ -398,6 +395,7 @@ class Player:
 		elif self.state in [Player.JUMPING, Player.FALLING]:
 			self.state = Player.DOUBLE_JUMP
 			self.jump_sound = music.wav(game_object.resSE('double_jump.wav'), False)
+
 		if self.action in [Player.STAND_L, Player.RUN_L, Player.JUMP_L, Player.FALL_L]:
 			self.action = Player.JUMP_L
 		elif self.action in [Player.STAND_R, Player.RUN_R, Player.JUMP_R, Player.FALL_R]:
