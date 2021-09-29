@@ -2,18 +2,18 @@
   b     b   b       b    
 bbb  f  b bb      c b   b
 bl  bbb bbb         b s b
-b  fb b   s  rbbbbbbbbb b
-b fbb bl     bbt        b
-b tb  bb     b   s f  bbb
+b   b b   s  rbbbbbbbbb b
+b fbb b      bbt        b
+b tb  bb     b   s    bbb
 b  b   bl   sb  bbbbssb b
-bf bbbbbb ffbb     bbbbbb
-bt b   bs bbbbs        bb
-bc   s bc b  bblrl f   bb
+b  bbbbbb ffbb     bbbbbb
+b  b   bs bbbbs        bb
+bc   s bc b  bb s  f   bb
 bbbbb  bbbb   bbbbbbb   b
-b      bt   b b       f b
+b      bt   b b         b
 b fbbbbb  f t   s     bbb
 b tbssb  bbb  bbb     b  
-b       fb b fb b s  b   
+b        b b fb b s  b   
 bbbbb  bbb b tb bbb  b   
     bssb   b cb   bssb   
     bbbb   bbbb   bbbb   
