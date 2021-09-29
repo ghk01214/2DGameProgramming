@@ -45,7 +45,7 @@ def update():
 		stage_num += 1
 		stage_gen.remove()
 		bgm = music.mp3(resSE('stage_%d.mp3' % stage_num), True)
-		stage_gen.load(resBM('../stage_%d.txt' % stage_num))
+		stage_gen.load(resBM('../stage_%d.txt' % stage_num), True)
 
 		if stage_num == 3:
 			bgm.set_volume(128)
