@@ -1,19 +1,19 @@
 bbbbbbbbbbbbttbbbbbbbbbbb
       b             b   b
-bcbff b rbsb  bcbs      b
-bbb   b    bss bbbs bfb b
+bcbff b rbsb  bcbf    s b
+bbb   b    bff bbbs bbb b
 b   f b   rbbb  bbbbb s b
-b rbb b f  b            b
+b rbb b s  b            b
 b   bbbb   b bcb f fbfbbb
 bbb      rbb bbb b b     
 bbb  f  rbbb   b  bs bbbb
 bsbbbbbcbbsb  sbf bs   tb
-b     bbb  bf sbbbbbbb  b
+b     bbb  bl  bbbbbbb  b
 b      b       b     bb b
-b  bb    f b f bcb b bs b
+b  bb    f bf  bcb b bt b
 b rbbs bfb bbbbbbb b b  b
 b  bbbbbtbbbs b    s bb b
 bs b   t  t  sb  f b rl b
 b            b  fbbb    b
-bs bcbf ss s   fb  bs  sb
+bs bcbf rl s   fb  bs  sb
 bbbbbbbbbbbbbbbbb  bbbbbb

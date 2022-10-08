@@ -22,9 +22,11 @@ def enter():
 	gfw.world.add(gfw.layer.player, player)
 
 	background = Background('background.png', player)
+	background.pos = get_canvas_width() * (stage_num - 1), 0
 	gfw.world.add(gfw.layer.background, background)
 
 	tile = Tile('res/tile_background.json', 'res/bitmap/tileset.png', player)
+	tile.scroll_x = get_canvas_width() * (stage_num - 1)
 	gfw.world.add(gfw.layer.tile, tile)
 
 	stage_gen.load(resBM('../stage_%d.txt' % stage_num), False)
@@ -126,7 +128,7 @@ def load():
 	if temp_stage != stage_num:
 		stage_gen.remove()
 		bgm = music.mp3(resSE('stage_%d.mp3' % stage_num), True)
-		stage_gen.load(resBM('../stage_%d.txt' % stage_num))
+		stage_gen.load(resBM('../stage_%d.txt' % stage_num), True)
 
 	if stage_num == 3:
 		bgm.set_volume(80)

@@ -1,17 +1,17 @@
 bbbbbbbbbbbbbbbbbbbbbbbbb
 b  t   bbb  s           b
-b      sbs  s          sb
+b      rbs  s          sb
 b  bbs     cbs  s bbbb   
 b   bbf     b   bbb   bbb
 b   bbb s  sb    cb b  sb
 b  bbbbbbb bbs sbbb b bbb
    bbbbbb  bbb bb   b bbb
 bsss      fbbb  b bfb sbb
-b     bbbbbbbbb   bbb  sb
-b fbbbbbbbbbbbbbbbbbbb  b
-b  sbbs          bbbbbb b
-bl   b      bs  sbbbbbs b
-b    bc rl  ssb  bbbbs  b
+bs    bbbbbbbbb   bbb  sb
+bs bbbbbbbbbbbbbbbbbbb  b
+bs sbbs          bbbbbb b
+bs   b      bs  sbbbbbs b
+bs   bc rl  ssb  bbbbs  b
 bbb  bbbbb  bbbb bbbs   b
 b t            s      fbb
 b   fb        sbf    fbbb

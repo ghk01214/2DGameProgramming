@@ -33,7 +33,10 @@ class Player:
 
 	def __init__(self):
 		self.image = gfw.image.load(resBM('animation.png'))
-		self.pos = 600, 530
+		self.pos = 600, 530		# 1 Stage
+		#self.pos = 50, 524		# 2 Stage
+		#self.pos = 15, 364		# 3 Stage
+		#self.pos = 15, 492		# 4, 5 Stage
 		self.delta = 0
 		self.speed = 200
 		self.time = 0
